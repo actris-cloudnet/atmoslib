@@ -20,7 +20,7 @@ def k2c(temp: npt.NDArray) -> npt.NDArray:
     return ma.array(temp) - 273.15
 
 
-def calc_vapor_pressure(
+def vapor_pressure(
     pressure: npt.NDArray, specific_humidity: npt.NDArray
 ) -> npt.NDArray:
     """Calculate vapor pressure of water from pressure and specific humidity.
@@ -43,7 +43,7 @@ def calc_vapor_pressure(
     )
 
 
-def calc_saturation_vapor_pressure(temperature: npt.NDArray) -> npt.NDArray:
+def saturation_vapor_pressure(temperature: npt.NDArray) -> npt.NDArray:
     """Goff-Gratch formula for saturation vapor pressure over water adopted by WMO.
 
     Args:
@@ -66,43 +66,39 @@ def calc_saturation_vapor_pressure(temperature: npt.NDArray) -> npt.NDArray:
     ) * con.HPA_TO_PA
 
 
-def calc_mixing_ratio(
-    vapor_pressure: npt.NDArray, pressure: npt.NDArray
-) -> npt.NDArray:
+def mixing_ratio(vp: npt.NDArray, pressure: npt.NDArray) -> npt.NDArray:
     """Calculate mixing ratio from partial vapor pressure and pressure.
 
     Args:
-        vapor_pressure: Partial pressure of water vapor (Pa).
+        vp: Partial pressure of water vapor (Pa).
         pressure: Atmospheric pressure (Pa).
 
     Returns:
         Mixing ratio (kg kg-1).
     """
-    return con.MW_RATIO * vapor_pressure / (pressure - vapor_pressure)
+    return con.MW_RATIO * vp / (pressure - vp)
 
 
-def calc_air_density(
+def air_density(
     pressure: npt.NDArray,
     temperature: npt.NDArray,
-    svp_mixing_ratio: npt.NDArray,
+    mr: npt.NDArray,
 ) -> npt.NDArray:
-    """Calculate air density.
+    """Calculate moist-air density.
 
     Args:
         pressure: Pressure (Pa).
         temperature: Temperature (K).
-        svp_mixing_ratio: Saturation vapor pressure mixing ratio (kg kg-1).
+        mr: Water vapor mixing ratio (kg kg-1).
 
     Returns:
         Air density (kg m-3).
     """
-    return pressure / (con.RS * temperature * (0.6 * svp_mixing_ratio + 1))
+    return pressure / (con.RS * temperature * (0.6 * mr + 1))
 
 
-def calc_lwc_change_rate(
-    temperature: npt.NDArray, pressure: npt.NDArray
-) -> npt.NDArray:
-    """Return rate of change of condensable water (LWC).
+def adiabatic_dlwc_dz(temperature: npt.NDArray, pressure: npt.NDArray) -> npt.NDArray:
+    """Return adiabatic vertical gradient of liquid water content (dLWC/dz).
 
     Calculates the theoretical adiabatic rate of increase of LWC with height,
     given the cloud base temperature and pressure.
@@ -117,15 +113,15 @@ def calc_lwc_change_rate(
     References:
         Brenguier, 1991, https://doi.org/10.1175/1520-0469(1991)048<0264:POTCPA>2.0.CO;2
     """
-    svp = calc_saturation_vapor_pressure(temperature)
-    svp_mixing_ratio = calc_mixing_ratio(svp, pressure)
-    air_density = calc_air_density(pressure, temperature, svp_mixing_ratio)
+    svp = saturation_vapor_pressure(temperature)
+    svp_mr = mixing_ratio(svp, pressure)
+    rho = air_density(pressure, temperature, svp_mr)
 
     e = 0.622
     Cp = 1004  # J kg-1 K-1
     Lv = 2.45e6  # J kg-1 = Pa m3 kg-1
-    qs = svp_mixing_ratio  # kg kg-1
-    pa = air_density  # kg m-3
+    qs = svp_mr  # kg kg-1
+    pa = rho  # kg m-3
     es = svp  # Pa
     P = pressure  # Pa
     T = temperature  # K
@@ -139,15 +135,15 @@ def calc_lwc_change_rate(
     )
 
     # Hydrostatic equation to convert dqs_dp to dqs_dz
-    dqs_dz = dqs_dp * air_density * -scipy.constants.g
+    dqs_dz = dqs_dp * rho * -scipy.constants.g
 
-    return dqs_dz * air_density
+    return dqs_dz * rho
 
 
-def calc_altitude(temperature: float, pressure: float) -> float:
+def isa_altitude(temperature: float, pressure: float) -> float:
     """Calculate altitude from observed pressure and temperature.
 
-    Uses the International Standard Atmosphere (ISA) model.
+    Uses the International Standard Atmosphere (ISA) hypsometric formula.
 
     Args:
         temperature: Observed temperature (K).
@@ -160,9 +156,7 @@ def calc_altitude(temperature: float, pressure: float) -> float:
     return (temperature / L) * (1 - (pressure / con.P0) ** (con.RS * L / con.G))
 
 
-def calc_wet_bulb_temperature(
-    t: npt.NDArray, p: npt.NDArray, q: npt.NDArray
-) -> npt.NDArray:
+def wet_bulb_temperature(t: npt.NDArray, p: npt.NDArray, q: npt.NDArray) -> npt.NDArray:
     """Calculate wet-bulb temperature iteratively.
 
     Args:
@@ -179,13 +173,13 @@ def calc_wet_bulb_temperature(
         Efficiency. Int. J. Agric. Innovations Res., 4, 1013-1018.
     """
     td = k2c(t)
-    vp = calc_vapor_pressure(p, q)
-    W = calc_mixing_ratio(vp, p)
+    vp = vapor_pressure(p, q)
+    W = mixing_ratio(vp, p)
     L_v_0 = 2501e3  # Latent heat of vaporization at 0degC (J kg-1)
 
     def f(tw: npt.NDArray) -> npt.NDArray:
-        svp = calc_saturation_vapor_pressure(c2k(tw))
-        W_s = calc_mixing_ratio(svp, p)
+        svp = saturation_vapor_pressure(c2k(tw))
+        W_s = mixing_ratio(svp, p)
         C_p_w = 0.0265 * tw**2 - 1.7688 * tw + 4205.6  # Eq. 6 (J kg-1 C-1)
         C_p_wv = 0.0016 * td**2 + 0.1546 * td + 1858.7  # Eq. 7 (J kg-1 C-1)
         C_p_da = 0.0667 * ((td + tw) / 2) + 1005  # Eq. 8 (J kg-1 C-1)
