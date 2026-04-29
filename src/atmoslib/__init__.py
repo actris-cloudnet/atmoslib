@@ -1,3 +1,9 @@
+from atmoslib.attenuation import (
+    gas_specific_attenuation as gas_specific_attenuation,
+)
+from atmoslib.attenuation import (
+    liquid_water_specific_attenuation as liquid_water_specific_attenuation,
+)
 from atmoslib.thermodynamics import (
     absolute_humidity as absolute_humidity,
 )
