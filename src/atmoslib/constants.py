@@ -19,3 +19,6 @@ G: Final = 9.80665
 
 HPA_TO_PA: Final = 100
 PA_TO_HPA: Final = 1 / HPA_TO_PA
+
+# Radius of the Earth (m) as assumed in ECMWF IFS
+EARTH_RADIUS: Final = 6_371_229

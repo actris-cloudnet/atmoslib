@@ -8,6 +8,9 @@ from atmoslib.thermodynamics import (
     c2k as c2k,
 )
 from atmoslib.thermodynamics import (
+    geometric_height as geometric_height,
+)
+from atmoslib.thermodynamics import (
     isa_altitude as isa_altitude,
 )
 from atmoslib.thermodynamics import (
