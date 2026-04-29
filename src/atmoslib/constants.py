@@ -12,7 +12,7 @@ MW_RATIO: Final = 0.62198
 RS: Final = 287.058
 
 # Specific gas constant for water vapor (J kg-1 K-1)
-RW: Final = 462.0
+RW: Final = RS / MW_RATIO
 
 # Specific heat of dry air at constant pressure (J kg-1 K-1)
 CP_DRY: Final = 1004.0
