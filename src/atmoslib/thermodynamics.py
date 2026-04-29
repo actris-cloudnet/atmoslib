@@ -3,7 +3,6 @@ from typing import Literal
 
 import numpy as np
 import numpy.typing as npt
-import scipy.constants
 from numpy import ma
 
 from atmoslib import constants as con
@@ -171,7 +170,7 @@ def adiabatic_dlwc_dz(temperature: npt.NDArray, pressure: npt.NDArray) -> npt.ND
     )
 
     # Hydrostatic equation to convert dqs_dp to dqs_dz
-    dqs_dz = dqs_dp * rho * -scipy.constants.g
+    dqs_dz = dqs_dp * rho * -con.G
 
     return dqs_dz * rho
 

@@ -17,7 +17,6 @@ classifiers = [
 ]
 dependencies = [
   "numpy",
-  "scipy",
 ]
 description = "Python library for atmospheric thermodynamic calculations"
 dynamic = ["version"]
@@ -31,7 +30,6 @@ test = [
   "mypy",
   "pytest",
   "ruff",
-  "scipy-stubs",
 ]
 
 [project.urls]
