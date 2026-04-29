@@ -9,6 +9,9 @@ from atmoslib import constants as con
 
 logger = logging.getLogger(__name__)
 
+# (R_vapor / R_dry - 1), used in moist-air virtual-temperature corrections
+_EPSILON_V = (1 - con.MW_RATIO) / con.MW_RATIO
+
 
 def c2k(t: npt.NDArray) -> npt.NDArray:
     """Converts Celsius to Kelvins."""
@@ -190,7 +193,7 @@ def air_density(
     Returns:
         Air density (kg m-3).
     """
-    return pressure / (con.RS * temperature * (0.6 * mr + 1))
+    return pressure / (con.RS * temperature * (1 + _EPSILON_V * mr))
 
 
 def virtual_temperature(t: npt.NDArray, q: npt.NDArray) -> npt.NDArray:
@@ -203,7 +206,7 @@ def virtual_temperature(t: npt.NDArray, q: npt.NDArray) -> npt.NDArray:
     Returns:
         Virtual temperature (K).
     """
-    return t * (1 + 0.61 * q)
+    return t * (1 + _EPSILON_V * q)
 
 
 def potential_temperature(

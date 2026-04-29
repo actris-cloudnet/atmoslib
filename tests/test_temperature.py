@@ -15,8 +15,9 @@ def test_virtual_temperature_dry_air_equals_temperature():
 
 
 def test_virtual_temperature_known_value():
+    # 300 * (1 + (1 - MW_RATIO)/MW_RATIO * 0.01) ≈ 301.823
     assert virtual_temperature(np.array(300.0), np.array(0.01)) == pytest.approx(
-        301.83, abs=1e-6
+        301.823, abs=0.001
     )
 
 
