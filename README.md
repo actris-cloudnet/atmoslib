@@ -36,7 +36,7 @@ NumPy rules).
 | `mixing_ratio(vp, p)`           | Mixing ratio (kg/kg)                                          |
 | `air_density(p, t, mr)`         | Moist-air density (kg/m³)                                     |
 | `adiabatic_dlwc_dz(t, p)`       | Adiabatic vertical gradient of LWC at cloud base (kg/m³/m)    |
-| `geometric_height(height)`      | Geopotential height to geometric height (m, ECMWF)            |
+| `geometric_height(gph)`         | Geopotential height to geometric height (m, ECMWF)            |
 | `isa_altitude(t, p)`            | Altitude from pressure and temperature (m, ISA)               |
 | `c2k(t)` / `k2c(t)`             | Celsius ↔ Kelvin conversion                                  |
 

@@ -175,11 +175,11 @@ def adiabatic_dlwc_dz(temperature: npt.NDArray, pressure: npt.NDArray) -> npt.ND
     return dqs_dz * rho
 
 
-def geometric_height(height: npt.NDArray) -> npt.NDArray:
+def geometric_height(gph: npt.NDArray) -> npt.NDArray:
     """Convert geopotential height to geometric height.
 
     Args:
-        height: Geopotential height (m).
+        gph: Geopotential height (m).
 
     Returns:
         Geometric height (m).
@@ -188,7 +188,7 @@ def geometric_height(height: npt.NDArray) -> npt.NDArray:
         ECMWF (2023). ERA5: compute pressure and geopotential on model levels,
         geopotential height and geometric height. https://confluence.ecmwf.int/x/JJh0CQ
     """
-    return con.EARTH_RADIUS * height / (con.EARTH_RADIUS - height)
+    return con.EARTH_RADIUS * gph / (con.EARTH_RADIUS - gph)
 
 
 def isa_altitude(temperature: float, pressure: float) -> float:
