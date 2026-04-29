@@ -11,14 +11,14 @@ from atmoslib import constants as con
 logger = logging.getLogger(__name__)
 
 
-def c2k(temp: npt.NDArray) -> npt.NDArray:
+def c2k(t: npt.NDArray) -> npt.NDArray:
     """Converts Celsius to Kelvins."""
-    return ma.array(temp) + 273.15
+    return ma.array(t) + 273.15
 
 
-def k2c(temp: npt.NDArray) -> npt.NDArray:
+def k2c(t: npt.NDArray) -> npt.NDArray:
     """Converts Kelvins to Celsius."""
-    return ma.array(temp) - 273.15
+    return ma.array(t) - 273.15
 
 
 def vapor_pressure(

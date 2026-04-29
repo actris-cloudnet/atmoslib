@@ -38,7 +38,7 @@ NumPy rules).
 | `adiabatic_dlwc_dz(t, p)`       | Adiabatic vertical gradient of LWC at cloud base (kg/m³/m)    |
 | `geometric_height(height)`      | Geopotential height to geometric height (m, ECMWF)            |
 | `isa_altitude(t, p)`            | Altitude from pressure and temperature (m, ISA)               |
-| `c2k(temp)` / `k2c(temp)`       | Celsius ↔ Kelvin conversion                                  |
+| `c2k(t)` / `k2c(t)`             | Celsius ↔ Kelvin conversion                                  |
 
 See the docstrings for argument details and references.
 
