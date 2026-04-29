@@ -28,7 +28,7 @@ def vapor_pressure(
 
     Args:
         pressure: Pressure (Pa).
-        specific_humidity: Specific humidity (1).
+        specific_humidity: Specific humidity (kg kg-1).
 
     Returns:
         Vapor pressure (Pa).
