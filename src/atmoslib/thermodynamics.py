@@ -23,14 +23,12 @@ def k2c(t: npt.NDArray) -> npt.NDArray:
     return ma.array(t) - 273.15
 
 
-def vapor_pressure(
-    pressure: npt.NDArray, specific_humidity: npt.NDArray
-) -> npt.NDArray:
+def vapor_pressure(p: npt.NDArray, q: npt.NDArray) -> npt.NDArray:
     """Calculate vapor pressure of water from pressure and specific humidity.
 
     Args:
-        pressure: Pressure (Pa).
-        specific_humidity: Specific humidity (kg kg-1).
+        p: Pressure (Pa).
+        q: Specific humidity (kg kg-1).
 
     Returns:
         Vapor pressure (Pa).
@@ -39,21 +37,17 @@ def vapor_pressure(
         Cai, J. (2019). Humidity Measures.
         https://cran.r-project.org/web/packages/humidity/vignettes/humidity-measures.html
     """
-    return (
-        specific_humidity
-        * pressure
-        / (con.MW_RATIO + (1 - con.MW_RATIO) * specific_humidity)
-    )
+    return q * p / (con.MW_RATIO + (1 - con.MW_RATIO) * q)
 
 
 def saturation_vapor_pressure(
-    temperature: npt.NDArray,
+    t: npt.NDArray,
     phase: Literal["liquid", "ice", "mixed"] = "liquid",
 ) -> npt.NDArray:
     """Goff-Gratch formula for saturation vapor pressure adopted by WMO.
 
     Args:
-        temperature: Temperature (K).
+        t: Temperature (K).
         phase: ``"liquid"`` for over water, ``"ice"`` for over ice, or
             ``"mixed"`` to automatically select ice below 273.16 K and
             liquid at or above.
@@ -65,14 +59,14 @@ def saturation_vapor_pressure(
         Vömel, H. (2016). Saturation vapor pressure formulations.
         http://cires1.colorado.edu/~voemel/vp.html
     """
-    ratio = con.T0 / temperature
+    ratio = con.T0 / t
     inv_ratio = ratio**-1
 
     if phase == "ice":
         return _svp_ice(ratio, inv_ratio)
     if phase == "mixed":
         return np.where(
-            temperature < con.T0,
+            t < con.T0,
             _svp_ice(ratio, inv_ratio),
             _svp_liquid(ratio, inv_ratio),
         )
@@ -104,17 +98,17 @@ def _svp_ice(ratio: npt.NDArray, inv_ratio: npt.NDArray) -> npt.NDArray:
     ) * con.HPA_TO_PA
 
 
-def mixing_ratio(vp: npt.NDArray, pressure: npt.NDArray) -> npt.NDArray:
+def mixing_ratio(vp: npt.NDArray, p: npt.NDArray) -> npt.NDArray:
     """Calculate mixing ratio from partial vapor pressure and pressure.
 
     Args:
         vp: Partial pressure of water vapor (Pa).
-        pressure: Atmospheric pressure (Pa).
+        p: Atmospheric pressure (Pa).
 
     Returns:
         Mixing ratio (kg kg-1).
     """
-    return con.MW_RATIO * vp / (pressure - vp)
+    return con.MW_RATIO * vp / (p - vp)
 
 
 def relative_humidity(t: npt.NDArray, p: npt.NDArray, q: npt.NDArray) -> npt.NDArray:
@@ -179,21 +173,21 @@ def latent_heat_vaporization(t: npt.NDArray) -> npt.NDArray:
 
 
 def air_density(
-    pressure: npt.NDArray,
-    temperature: npt.NDArray,
+    p: npt.NDArray,
+    t: npt.NDArray,
     mr: npt.NDArray,
 ) -> npt.NDArray:
     """Calculate moist-air density.
 
     Args:
-        pressure: Pressure (Pa).
-        temperature: Temperature (K).
+        p: Pressure (Pa).
+        t: Temperature (K).
         mr: Water vapor mixing ratio (kg kg-1).
 
     Returns:
         Air density (kg m-3).
     """
-    return pressure / (con.RS * temperature * (1 + _EPSILON_V * mr))
+    return p / (con.RS * t * (1 + _EPSILON_V * mr))
 
 
 def virtual_temperature(t: npt.NDArray, q: npt.NDArray) -> npt.NDArray:
@@ -303,15 +297,15 @@ def wet_bulb_temperature(t: npt.NDArray, p: npt.NDArray, q: npt.NDArray) -> npt.
     return c2k(tw)
 
 
-def adiabatic_dlwc_dz(temperature: npt.NDArray, pressure: npt.NDArray) -> npt.NDArray:
+def adiabatic_dlwc_dz(t: npt.NDArray, p: npt.NDArray) -> npt.NDArray:
     """Return adiabatic vertical gradient of liquid water content (dLWC/dz).
 
     Calculates the theoretical adiabatic rate of increase of LWC with height,
     given the cloud base temperature and pressure.
 
     Args:
-        temperature: Temperature of cloud base (K).
-        pressure: Pressure of cloud base (Pa).
+        t: Temperature of cloud base (K).
+        p: Pressure of cloud base (Pa).
 
     Returns:
         dlwc/dz (kg m-3 m-1).
@@ -319,23 +313,21 @@ def adiabatic_dlwc_dz(temperature: npt.NDArray, pressure: npt.NDArray) -> npt.ND
     References:
         Brenguier, 1991, https://doi.org/10.1175/1520-0469(1991)048<0264:POTCPA>2.0.CO;2
     """
-    svp = saturation_vapor_pressure(temperature)
-    svp_mr = mixing_ratio(svp, pressure)
-    rho = air_density(pressure, temperature, svp_mr)
-    Lv = latent_heat_vaporization(temperature)
+    svp = saturation_vapor_pressure(t)
+    svp_mr = mixing_ratio(svp, p)
+    rho = air_density(p, t, svp_mr)
+    Lv = latent_heat_vaporization(t)
 
     qs = svp_mr  # kg kg-1
     pa = rho  # kg m-3
     es = svp  # Pa
-    P = pressure  # Pa
-    T = temperature  # K
 
     # See Appendix B in Brenguier (1991) for the derivation
     dqs_dp = (
-        -(1 - (con.CP_DRY * T) / (con.MW_RATIO * Lv))
-        * (((con.CP_DRY * T) / (con.MW_RATIO * Lv)) + ((Lv * qs * pa) / (P - es))) ** -1
+        -(1 - (con.CP_DRY * t) / (con.MW_RATIO * Lv))
+        * (((con.CP_DRY * t) / (con.MW_RATIO * Lv)) + ((Lv * qs * pa) / (p - es))) ** -1
         * (con.MW_RATIO * es)
-        * (P - es) ** -2
+        * (p - es) ** -2
     )
 
     # Hydrostatic equation to convert dqs_dp to dqs_dz
@@ -360,17 +352,17 @@ def geometric_height(gph: npt.NDArray) -> npt.NDArray:
     return con.EARTH_RADIUS * gph / (con.EARTH_RADIUS - gph)
 
 
-def isa_altitude(temperature: float, pressure: float) -> float:
+def isa_altitude(t: float, p: float) -> float:
     """Calculate altitude from observed pressure and temperature.
 
     Uses the International Standard Atmosphere (ISA) hypsometric formula.
 
     Args:
-        temperature: Observed temperature (K).
-        pressure: Observed atmospheric pressure (Pa).
+        t: Observed temperature (K).
+        p: Observed atmospheric pressure (Pa).
 
     Returns:
         Altitude (m).
     """
     L = 0.0065  # Temperature lapse rate (K/m)
-    return (temperature / L) * (1 - (pressure / con.P0) ** (con.RS * L / con.G))
+    return (t / L) * (1 - (p / con.P0) ** (con.RS * L / con.G))
