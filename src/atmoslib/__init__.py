@@ -1,4 +1,7 @@
 from atmoslib.thermodynamics import (
+    absolute_humidity as absolute_humidity,
+)
+from atmoslib.thermodynamics import (
     adiabatic_dlwc_dz as adiabatic_dlwc_dz,
 )
 from atmoslib.thermodynamics import (
@@ -6,6 +9,12 @@ from atmoslib.thermodynamics import (
 )
 from atmoslib.thermodynamics import (
     c2k as c2k,
+)
+from atmoslib.thermodynamics import (
+    dew_point as dew_point,
+)
+from atmoslib.thermodynamics import (
+    equivalent_potential_temperature as equivalent_potential_temperature,
 )
 from atmoslib.thermodynamics import (
     geometric_height as geometric_height,
@@ -17,13 +26,25 @@ from atmoslib.thermodynamics import (
     k2c as k2c,
 )
 from atmoslib.thermodynamics import (
+    latent_heat_vaporization as latent_heat_vaporization,
+)
+from atmoslib.thermodynamics import (
     mixing_ratio as mixing_ratio,
+)
+from atmoslib.thermodynamics import (
+    potential_temperature as potential_temperature,
+)
+from atmoslib.thermodynamics import (
+    relative_humidity as relative_humidity,
 )
 from atmoslib.thermodynamics import (
     saturation_vapor_pressure as saturation_vapor_pressure,
 )
 from atmoslib.thermodynamics import (
     vapor_pressure as vapor_pressure,
+)
+from atmoslib.thermodynamics import (
+    virtual_temperature as virtual_temperature,
 )
 from atmoslib.thermodynamics import (
     wet_bulb_temperature as wet_bulb_temperature,

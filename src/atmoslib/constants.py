@@ -11,6 +11,15 @@ MW_RATIO: Final = 0.62198
 # Specific gas constant for dry air (J kg-1 K-1)
 RS: Final = 287.058
 
+# Specific gas constant for water vapor (J kg-1 K-1)
+RW: Final = 462.0
+
+# Specific heat of dry air at constant pressure (J kg-1 K-1)
+CP_DRY: Final = 1004.0
+
+# Latent heat of vaporization at the triple point T0 (J kg-1)
+LATENT_HEAT_0: Final = 2.501e6
+
 # Standard atmospheric pressure at sea level (Pa)
 P0: Final = 101325
 
