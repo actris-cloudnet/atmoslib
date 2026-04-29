@@ -1,4 +1,5 @@
 import logging
+from typing import Literal
 
 import numpy as np
 import numpy.typing as npt
@@ -43,25 +44,60 @@ def vapor_pressure(
     )
 
 
-def saturation_vapor_pressure(temperature: npt.NDArray) -> npt.NDArray:
-    """Goff-Gratch formula for saturation vapor pressure over water adopted by WMO.
+def saturation_vapor_pressure(
+    temperature: npt.NDArray,
+    phase: Literal["liquid", "ice", "mixed"] = "liquid",
+) -> npt.NDArray:
+    """Goff-Gratch formula for saturation vapor pressure adopted by WMO.
 
     Args:
         temperature: Temperature (K).
+        phase: ``"liquid"`` for over water, ``"ice"`` for over ice, or
+            ``"mixed"`` to automatically select ice below 273.16 K and
+            liquid at or above.
 
     Returns:
         Saturation vapor pressure (Pa).
+
+    References:
+        Vömel, H. (2016). Saturation vapor pressure formulations.
+        http://cires1.colorado.edu/~voemel/vp.html
     """
     ratio = con.T0 / temperature
     inv_ratio = ratio**-1
+
+    if phase == "ice":
+        return _svp_ice(ratio, inv_ratio)
+    if phase == "mixed":
+        return np.where(
+            temperature < con.T0,
+            _svp_ice(ratio, inv_ratio),
+            _svp_liquid(ratio, inv_ratio),
+        )
+    return _svp_liquid(ratio, inv_ratio)
+
+
+def _svp_liquid(ratio: npt.NDArray, inv_ratio: npt.NDArray) -> npt.NDArray:
     return (
         10
         ** (
             10.79574 * (1 - ratio)
-            - 5.028 * np.log10(inv_ratio)
-            + 1.50475e-4 * (1 - (10 ** (-8.2969 * (inv_ratio - 1))))
+            - 5.02800 * np.log10(inv_ratio)
+            + 1.50475e-4 * (1 - 10 ** (-8.2969 * (inv_ratio - 1)))
             + 0.42873e-3 * (10 ** (4.76955 * (1 - ratio)) - 1)
             + 0.78614
+        )
+    ) * con.HPA_TO_PA
+
+
+def _svp_ice(ratio: npt.NDArray, inv_ratio: npt.NDArray) -> npt.NDArray:
+    return (
+        10
+        ** (
+            -9.09718 * (ratio - 1)
+            - 3.56654 * np.log10(ratio)
+            + 0.876793 * (1 - inv_ratio)
+            + np.log10(6.1071)
         )
     ) * con.HPA_TO_PA
 

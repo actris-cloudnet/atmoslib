@@ -28,17 +28,17 @@ NumPy rules).
 
 ## Available functions
 
-| Function                        | Description                                                |
-| ------------------------------- | ---------------------------------------------------------- |
-| `wet_bulb_temperature(t, p, q)` | Wet-bulb temperature from `t`, `p`, `q` (K)                |
-| `vapor_pressure(p, q)`          | Vapor pressure of water (Pa)                               |
-| `saturation_vapor_pressure(t)`  | Saturation vapor pressure over water (Pa, Goff-Gratch)     |
-| `mixing_ratio(vp, p)`           | Mixing ratio (kg/kg)                                       |
-| `air_density(p, t, mr)`         | Moist-air density (kg/m³)                                  |
-| `adiabatic_dlwc_dz(t, p)`       | Adiabatic vertical gradient of LWC at cloud base (kg/m³/m) |
-| `geometric_height(height)`      | Geopotential height to geometric height (m, ECMWF)         |
-| `isa_altitude(t, p)`            | Altitude from pressure and temperature (m, ISA)            |
-| `c2k(temp)` / `k2c(temp)`       | Celsius ↔ Kelvin conversion                               |
+| Function                        | Description                                                   |
+| ------------------------------- | ------------------------------------------------------------- |
+| `wet_bulb_temperature(t, p, q)` | Wet-bulb temperature from `t`, `p`, `q` (K)                   |
+| `vapor_pressure(p, q)`          | Vapor pressure of water (Pa)                                  |
+| `saturation_vapor_pressure(t)`  | Saturation vapor pressure (Pa, Goff-Gratch, liquid/ice/mixed) |
+| `mixing_ratio(vp, p)`           | Mixing ratio (kg/kg)                                          |
+| `air_density(p, t, mr)`         | Moist-air density (kg/m³)                                     |
+| `adiabatic_dlwc_dz(t, p)`       | Adiabatic vertical gradient of LWC at cloud base (kg/m³/m)    |
+| `geometric_height(height)`      | Geopotential height to geometric height (m, ECMWF)            |
+| `isa_altitude(t, p)`            | Altitude from pressure and temperature (m, ISA)               |
+| `c2k(temp)` / `k2c(temp)`       | Celsius ↔ Kelvin conversion                                  |
 
 See the docstrings for argument details and references.
 
