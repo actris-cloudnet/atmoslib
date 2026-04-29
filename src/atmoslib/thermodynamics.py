@@ -230,7 +230,10 @@ def equivalent_potential_temperature(
 ) -> npt.NDArray:
     """Calculate equivalent potential temperature.
 
-    Uses the linearized form of the Bolton (1980) approximation.
+    Uses the first-order linearization of the simplified moist-adiabatic
+    expression: ``theta_e ≈ theta * (1 + Lv * r / (Cp * T))``. Accurate enough
+    for most boundary-layer applications; for higher precision see Bolton
+    (1980), https://doi.org/10.1175/1520-0493(1980)108<1046:TCOEPT>2.0.CO;2.
 
     Args:
         t: Temperature (K).
