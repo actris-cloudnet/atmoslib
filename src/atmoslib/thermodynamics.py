@@ -61,6 +61,8 @@ def saturation_vapor_pressure(t: npt.NDArray, phase: PHASE = "liquid") -> npt.ND
     ratio = con.T0 / t
     inv_ratio = ratio**-1
 
+    if phase == "liquid":
+        return _svp_liquid(ratio, inv_ratio)
     if phase == "ice":
         return _svp_ice(ratio, inv_ratio)
     if phase == "mixed":
@@ -69,7 +71,8 @@ def saturation_vapor_pressure(t: npt.NDArray, phase: PHASE = "liquid") -> npt.ND
             _svp_ice(ratio, inv_ratio),
             _svp_liquid(ratio, inv_ratio),
         )
-    return _svp_liquid(ratio, inv_ratio)
+    msg = "phase should be liquid, ice or mixed"
+    raise ValueError(msg)
 
 
 def _svp_liquid(ratio: npt.NDArray, inv_ratio: npt.NDArray) -> npt.NDArray:
