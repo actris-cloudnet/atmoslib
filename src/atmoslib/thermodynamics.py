@@ -352,6 +352,39 @@ def geometric_height(gph: npt.NDArray) -> npt.NDArray:
     return con.EARTH_RADIUS * gph / (con.EARTH_RADIUS - gph)
 
 
+def barometric_pressure_profile(
+    t: npt.NDArray,
+    q: npt.NDArray,
+    z: npt.NDArray,
+    p_sfc: npt.NDArray,
+) -> npt.NDArray:
+    """Integrate pressure profile from a surface value via the hypsometric equation.
+
+    Levels are integrated along the last axis using the mean virtual temperature
+    of each adjacent pair of levels.
+
+    Args:
+        t: Temperature at each level (K). Last axis is vertical.
+        q: Specific humidity at each level (kg kg-1). Same shape as ``t``.
+        z: Geometric height of each level (m). Broadcasts against ``t`` along
+            the last axis (typically a 1-D array of size ``t.shape[-1]``).
+        p_sfc: Pressure at the lowest level (Pa). Shape must match ``t.shape[:-1]``.
+
+    Returns:
+        Pressure at each level (Pa), same shape as ``t``.
+
+    References:
+        Wallace, J. M., & Hobbs, P. V. (2006). Atmospheric Science: An
+        Introductory Survey, 2nd ed., Section 3.2.
+    """
+    tv = virtual_temperature(t, q)
+    tv_half = (tv[..., :-1] + tv[..., 1:]) / 2
+    dz = np.diff(z, axis=-1)
+    dp_ratio = np.exp(-con.G * dz / (con.RS * tv_half))
+    tmp = np.insert(dp_ratio, 0, p_sfc, axis=-1)
+    return np.cumprod(tmp, axis=-1)
+
+
 def isa_altitude(t: float, p: float) -> float:
     """Calculate altitude from observed pressure and temperature.
 
