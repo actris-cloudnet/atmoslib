@@ -39,9 +39,9 @@ def liquid_water_specific_attenuation(
 
 
 def gas_specific_attenuation(
+    t: npt.NDArray,
     p: npt.NDArray,
     e: npt.NDArray,
-    t: npt.NDArray,
     f: float | np.floating,
 ) -> npt.NDArray:
     """Calculate specific attenuation due to dry air and water vapor.
@@ -49,9 +49,9 @@ def gas_specific_attenuation(
     Valid for frequency up to 1000 GHz.
 
     Args:
+        t: Temperature (K).
         p: Pressure (Pa).
         e: Water vapor partial pressure (Pa).
-        t: Temperature (K).
         f: Frequency (GHz).
 
     Returns:

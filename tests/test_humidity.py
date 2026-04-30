@@ -4,8 +4,8 @@ import pytest
 from atmoslib import constants as con
 from atmoslib.thermodynamics import (
     absolute_humidity,
-    dew_point,
-    latent_heat_vaporization,
+    dew_point_temperature,
+    latent_heat_of_vaporization,
     relative_humidity,
     saturation_vapor_pressure,
     vapor_pressure,
@@ -57,7 +57,7 @@ def test_absolute_humidity_inverse_of_ideal_gas():
 def test_dew_point_at_saturation_equals_temperature():
     t = np.array([293.15, 283.15, 273.15])
     rh = np.full_like(t, 1.0)
-    td = dew_point(t, rh)
+    td = dew_point_temperature(t, rh)
     np.testing.assert_allclose(td, t, atol=1e-6)
 
 
@@ -65,7 +65,7 @@ def test_dew_point_below_temperature():
     rng = np.random.default_rng(0)
     t = rng.uniform(273.15, 313.15, size=20)
     rh = rng.uniform(0.05, 0.99, size=20)
-    td = dew_point(t, rh)
+    td = dew_point_temperature(t, rh)
     assert np.all(td < t)
 
 
@@ -81,19 +81,19 @@ def test_dew_point_below_temperature():
 )
 def test_dew_point_known_values(t_c, rh, expected_td_c):
     t = np.array(t_c + 273.15)
-    td = dew_point(t, np.array(rh))
+    td = dew_point_temperature(t, np.array(rh))
     td_c = float(td) - 273.15
     assert td_c == pytest.approx(expected_td_c, abs=0.5)
 
 
 def test_latent_heat_at_triple_point():
-    lv = latent_heat_vaporization(np.array(273.16))
+    lv = latent_heat_of_vaporization(np.array(273.16))
     assert float(lv) == pytest.approx(2.501e6, rel=1e-6)
 
 
 def test_latent_heat_decreases_with_temperature():
     t = np.array([253.15, 273.15, 293.15, 313.15])
-    lv = latent_heat_vaporization(t)
+    lv = latent_heat_of_vaporization(t)
     assert np.all(np.diff(lv) < 0)
 
 

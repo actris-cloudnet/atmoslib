@@ -138,7 +138,7 @@ def absolute_humidity(t: npt.NDArray, vp: npt.NDArray) -> npt.NDArray:
     return vp / (con.RW * t)
 
 
-def dew_point(t: npt.NDArray, rh: npt.NDArray) -> npt.NDArray:
+def dew_point_temperature(t: npt.NDArray, rh: npt.NDArray) -> npt.NDArray:
     """Calculate dew point temperature using the Magnus formula.
 
     Args:
@@ -160,7 +160,7 @@ def dew_point(t: npt.NDArray, rh: npt.NDArray) -> npt.NDArray:
     return c2k((b * alpha) / (a - alpha))
 
 
-def latent_heat_vaporization(t: npt.NDArray) -> npt.NDArray:
+def latent_heat_of_vaporization(t: npt.NDArray) -> npt.NDArray:
     """Calculate temperature-dependent latent heat of vaporization.
 
     Args:
@@ -173,15 +173,15 @@ def latent_heat_vaporization(t: npt.NDArray) -> npt.NDArray:
 
 
 def air_density(
-    p: npt.NDArray,
     t: npt.NDArray,
+    p: npt.NDArray,
     mr: npt.NDArray,
 ) -> npt.NDArray:
     """Calculate moist-air density.
 
     Args:
-        p: Pressure (Pa).
         t: Temperature (K).
+        p: Pressure (Pa).
         mr: Water vapor mixing ratio (kg kg-1).
 
     Returns:
@@ -240,7 +240,7 @@ def equivalent_potential_temperature(
     theta = potential_temperature(t, p)
     vp = vapor_pressure(p, q)
     mr = mixing_ratio(vp, p)
-    lv = latent_heat_vaporization(t)
+    lv = latent_heat_of_vaporization(t)
     return theta * (1 + lv * mr / (con.CP_DRY * t))
 
 
@@ -297,7 +297,7 @@ def wet_bulb_temperature(t: npt.NDArray, p: npt.NDArray, q: npt.NDArray) -> npt.
     return c2k(tw)
 
 
-def adiabatic_dlwc_dz(t: npt.NDArray, p: npt.NDArray) -> npt.NDArray:
+def adiabatic_lwc_gradient(t: npt.NDArray, p: npt.NDArray) -> npt.NDArray:
     """Return adiabatic vertical gradient of liquid water content (dLWC/dz).
 
     Calculates the theoretical adiabatic rate of increase of LWC with height,
@@ -315,8 +315,8 @@ def adiabatic_dlwc_dz(t: npt.NDArray, p: npt.NDArray) -> npt.NDArray:
     """
     svp = saturation_vapor_pressure(t)
     svp_mr = mixing_ratio(svp, p)
-    rho = air_density(p, t, svp_mr)
-    Lv = latent_heat_vaporization(t)
+    rho = air_density(t, p, svp_mr)
+    Lv = latent_heat_of_vaporization(t)
 
     qs = svp_mr  # kg kg-1
     pa = rho  # kg m-3

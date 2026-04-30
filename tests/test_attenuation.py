@@ -380,5 +380,5 @@ def test_gas_specific_attenuation():
         ]
     )
     desired = desired.reshape(len(desired), 1, 1)
-    actual = np.array([gas_specific_attenuation(p + e, e, T, f) for f in F])
+    actual = np.array([gas_specific_attenuation(T, p + e, e, f) for f in F])
     assert_allclose(actual, desired)

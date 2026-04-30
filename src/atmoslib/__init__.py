@@ -8,7 +8,7 @@ from atmoslib.thermodynamics import (
     absolute_humidity as absolute_humidity,
 )
 from atmoslib.thermodynamics import (
-    adiabatic_dlwc_dz as adiabatic_dlwc_dz,
+    adiabatic_lwc_gradient as adiabatic_lwc_gradient,
 )
 from atmoslib.thermodynamics import (
     air_density as air_density,
@@ -17,7 +17,7 @@ from atmoslib.thermodynamics import (
     c2k as c2k,
 )
 from atmoslib.thermodynamics import (
-    dew_point as dew_point,
+    dew_point_temperature as dew_point_temperature,
 )
 from atmoslib.thermodynamics import (
     equivalent_potential_temperature as equivalent_potential_temperature,
@@ -35,7 +35,7 @@ from atmoslib.thermodynamics import (
     k2c as k2c,
 )
 from atmoslib.thermodynamics import (
-    latent_heat_vaporization as latent_heat_vaporization,
+    latent_heat_of_vaporization as latent_heat_of_vaporization,
 )
 from atmoslib.thermodynamics import (
     mixing_ratio as mixing_ratio,
