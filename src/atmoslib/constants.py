@@ -23,6 +23,9 @@ LATENT_HEAT_0: Final = 2.501e6
 # Standard atmospheric pressure at sea level (Pa)
 P0: Final = 101325
 
+# Standard temperature at sea level (K)
+T_STD = 288.15
+
 # Standard gravitational acceleration (m s-2)
 G: Final = 9.80665
 
@@ -31,3 +34,6 @@ PA_TO_HPA: Final = 1 / HPA_TO_PA
 
 # Radius of the Earth (m) as assumed in ECMWF IFS
 EARTH_RADIUS: Final = 6_371_229
+
+# Temperature lapse rate in troposphere (K m-1)
+L0 = 0.0065

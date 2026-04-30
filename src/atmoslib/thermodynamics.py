@@ -397,5 +397,22 @@ def isa_altitude(t: float, p: float) -> float:
     Returns:
         Altitude (m).
     """
-    L = 0.0065  # Temperature lapse rate (K/m)
-    return (t / L) * (1 - (p / con.P0) ** (con.RS * L / con.G))
+    return (t / con.L0) * (1 - (p / con.P0) ** (con.RS * con.L0 / con.G))
+
+
+def isa_pressure(gph: float) -> float:
+    """Calculate atmospheric pressure at given altitude.
+
+    Uses the International Standard Atmosphere (ISA) hypsometric formula. Only
+    implemented up to 11 km.
+
+    Args:
+        gph: Geopotential height (m)
+
+    Returns:
+        Atmospheric pressure (Pa)
+    """
+    if np.any(gph >= 11_000):
+        msg = "Valid only up to 11 km"
+        raise ValueError(msg)
+    return con.P0 * (1 - con.L0 * gph / con.T_STD) ** (con.G / (con.RS * con.L0))
