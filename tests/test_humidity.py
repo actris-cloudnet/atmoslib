@@ -8,6 +8,7 @@ from atmoslib.thermodynamics import (
     latent_heat_of_vaporization,
     relative_humidity,
     saturation_vapor_pressure,
+    specific_humidity,
     vapor_pressure,
 )
 
@@ -29,6 +30,26 @@ def test_relative_humidity_known_value():
     q = np.array(0.010)
     rh = relative_humidity(t, p, q)
     assert rh == pytest.approx(0.51, abs=0.03)
+
+
+def test_specific_humidity_at_saturation():
+    t = np.array(298.15)
+    p = np.array(101325.0)
+    svp = saturation_vapor_pressure(t)
+    # Specific humidity that produces vapor_pressure(p, q) == svp(t)
+    q_sat = (svp * con.MW_RATIO) / (p - svp * (1 - con.MW_RATIO))
+    rh = np.array(1)
+    q = specific_humidity(t, p, rh)
+    assert q == q_sat
+
+
+def test_specific_humidity_known_value():
+    # 25 degC, 101325 Pa, q = 0.010 kg/kg → RH ~50%
+    t = np.array(298.15)
+    p = np.array(101325.0)
+    rh = np.array(0.51)
+    q = specific_humidity(t, p, rh)
+    assert q == pytest.approx(0.010, abs=1e-4)
 
 
 def test_relative_humidity_array_input():

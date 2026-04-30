@@ -53,6 +53,9 @@ from atmoslib.thermodynamics import (
     saturation_vapor_pressure as saturation_vapor_pressure,
 )
 from atmoslib.thermodynamics import (
+    specific_humidity as specific_humidity,
+)
+from atmoslib.thermodynamics import (
     vapor_pressure as vapor_pressure,
 )
 from atmoslib.thermodynamics import (

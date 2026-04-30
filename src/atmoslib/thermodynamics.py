@@ -113,7 +113,7 @@ def mixing_ratio(vp: npt.NDArray, p: npt.NDArray) -> npt.NDArray:
 def relative_humidity(
     t: npt.NDArray, p: npt.NDArray, q: npt.NDArray, phase: PHASE = "liquid"
 ) -> npt.NDArray:
-    """Calculate relative humidity.
+    """Calculate relative humidity from specific humidity.
 
     Args:
         t: Temperature (K).
@@ -127,6 +127,26 @@ def relative_humidity(
         Relative humidity (1).
     """
     return vapor_pressure(p, q) / saturation_vapor_pressure(t, phase)
+
+
+def specific_humidity(
+    t: npt.NDArray, p: npt.NDArray, rh: npt.NDArray, phase: PHASE = "liquid"
+) -> npt.NDArray:
+    """Calculate specific humidity from relative humidity.
+
+    Args:
+        t: Temperature (K).
+        p: Pressure (Pa).
+        rh: Relative humidity (kg kg-1).
+        phase: ``"liquid"`` for over water (default), ``"ice"`` for over ice,
+            or ``"mixed"`` to automatically select ice below 273.16 K and
+            liquid at or above.
+
+    Returns:
+        Specific humidity (1).
+    """
+    vp = rh * saturation_vapor_pressure(t, phase)
+    return (con.MW_RATIO * vp) / (p - (1 - con.MW_RATIO) * vp)
 
 
 def absolute_humidity(t: npt.NDArray, vp: npt.NDArray) -> npt.NDArray:
