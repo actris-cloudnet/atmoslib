@@ -1,5 +1,5 @@
 import logging
-from typing import Literal
+from typing import Literal, TypeAlias
 
 import numpy as np
 import numpy.typing as npt
@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 # (R_vapor / R_dry - 1), used in moist-air virtual-temperature corrections
 _EPSILON_V = (1 - con.MW_RATIO) / con.MW_RATIO
+
+PHASE: TypeAlias = Literal["liquid", "ice", "mixed"]
 
 
 def c2k(t: npt.NDArray) -> npt.NDArray:
@@ -40,16 +42,13 @@ def vapor_pressure(p: npt.NDArray, q: npt.NDArray) -> npt.NDArray:
     return q * p / (con.MW_RATIO + (1 - con.MW_RATIO) * q)
 
 
-def saturation_vapor_pressure(
-    t: npt.NDArray,
-    phase: Literal["liquid", "ice", "mixed"] = "liquid",
-) -> npt.NDArray:
+def saturation_vapor_pressure(t: npt.NDArray, phase: PHASE = "liquid") -> npt.NDArray:
     """Goff-Gratch formula for saturation vapor pressure adopted by WMO.
 
     Args:
         t: Temperature (K).
-        phase: ``"liquid"`` for over water, ``"ice"`` for over ice, or
-            ``"mixed"`` to automatically select ice below 273.16 K and
+        phase: ``"liquid"`` for over water (default), ``"ice"`` for over ice,
+            or ``"mixed"`` to automatically select ice below 273.16 K and
             liquid at or above.
 
     Returns:
@@ -111,18 +110,23 @@ def mixing_ratio(vp: npt.NDArray, p: npt.NDArray) -> npt.NDArray:
     return con.MW_RATIO * vp / (p - vp)
 
 
-def relative_humidity(t: npt.NDArray, p: npt.NDArray, q: npt.NDArray) -> npt.NDArray:
-    """Calculate relative humidity over liquid water.
+def relative_humidity(
+    t: npt.NDArray, p: npt.NDArray, q: npt.NDArray, phase: PHASE = "liquid"
+) -> npt.NDArray:
+    """Calculate relative humidity.
 
     Args:
         t: Temperature (K).
         p: Pressure (Pa).
         q: Specific humidity (kg kg-1).
+        phase: ``"liquid"`` for over water (default), ``"ice"`` for over ice,
+            or ``"mixed"`` to automatically select ice below 273.16 K and
+            liquid at or above.
 
     Returns:
         Relative humidity (1).
     """
-    return vapor_pressure(p, q) / saturation_vapor_pressure(t)
+    return vapor_pressure(p, q) / saturation_vapor_pressure(t, phase)
 
 
 def absolute_humidity(t: npt.NDArray, vp: npt.NDArray) -> npt.NDArray:

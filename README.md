@@ -33,7 +33,7 @@ NumPy rules).
 | `wet_bulb_temperature(t, p, q)`             | Wet-bulb temperature (K)                                                 |
 | `vapor_pressure(p, q)`                      | Vapor pressure of water (Pa)                                             |
 | `saturation_vapor_pressure(t)`              | Saturation vapor pressure (Pa, Goff-Gratch, liquid/ice/mixed)            |
-| `relative_humidity(t, p, q)`                | Relative humidity over liquid water (1)                                  |
+| `relative_humidity(t, p, q)`                | Relative humidity (1, liquid/ice/mixed)                                  |
 | `absolute_humidity(t, vp)`                  | Absolute humidity (kg/m³)                                                |
 | `dew_point_temperature(t, rh)`              | Dew-point temperature (K, Magnus)                                        |
 | `mixing_ratio(vp, p)`                       | Mixing ratio (kg/kg)                                                     |
