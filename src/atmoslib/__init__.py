@@ -32,6 +32,9 @@ from atmoslib.thermodynamics import (
     isa_altitude as isa_altitude,
 )
 from atmoslib.thermodynamics import (
+    isa_pressure as isa_pressure,
+)
+from atmoslib.thermodynamics import (
     k2c as k2c,
 )
 from atmoslib.thermodynamics import (
