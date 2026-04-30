@@ -50,7 +50,7 @@ NumPy rules).
 | `hydrostatic_pressure(t, q, z, p_sfc)`      | Pressure profile from surface value via hypsometric equation (Pa)        |
 | `geometric_height(gph)`                     | Geopotential height to geometric height (m, ECMWF)                       |
 | `isa_altitude(t, p)`                        | Altitude from pressure and temperature (m, ISA)                          |
-| `isa_pressure(gph)`                         | Pressure from altitude (m, ISA)                                          |
+| `isa_pressure(gph)`                         | Pressure from altitude (Pa, ISA)                                         |
 | `c2k(t)` / `k2c(t)`                         | Celsius ↔ Kelvin conversion                                             |
 | `liquid_water_specific_attenuation(t, f)`   | Cloud liquid water specific attenuation ((dB km⁻¹)/(g m⁻³), ITU-R P.840) |
 | `gas_specific_attenuation(t, p, e, f)`      | Dry-air + water-vapor specific attenuation (dB km⁻¹, ITU-R P.676)        |
