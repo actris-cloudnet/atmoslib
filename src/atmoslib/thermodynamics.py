@@ -364,7 +364,7 @@ def geometric_height(gph: npt.NDArray) -> npt.NDArray:
     """Convert geopotential height to geometric height.
 
     Args:
-        gph: Geopotential height (m).
+        gph: Geopotential height (gpm).
 
     Returns:
         Geometric height (m).
@@ -412,14 +412,15 @@ def hydrostatic_pressure(
 def isa_altitude(t: float, p: float) -> float:
     """Calculate altitude from observed pressure and temperature.
 
-    Uses the International Standard Atmosphere (ISA) hypsometric formula.
+    Uses the International Standard Atmosphere (ISA) hypsometric formula. Only
+    valid in troposphere up to 11 km.
 
     Args:
         t: Observed temperature (K).
         p: Observed atmospheric pressure (Pa).
 
     Returns:
-        Altitude (m).
+        Geopotential height (gpm).
     """
     return (t / con.L0) * (1 - (p / con.P0) ** (con.RS * con.L0 / con.G))
 
@@ -428,13 +429,13 @@ def isa_pressure(gph: float) -> float:
     """Calculate atmospheric pressure at given altitude.
 
     Uses the International Standard Atmosphere (ISA) hypsometric formula. Only
-    implemented up to 11 km.
+    valid in troposphere up to 11 km.
 
     Args:
-        gph: Geopotential height (m)
+        gph: Geopotential height (gpm).
 
     Returns:
-        Atmospheric pressure (Pa)
+        Atmospheric pressure (Pa).
     """
     if np.any(gph >= 11_000):
         msg = "Valid only up to 11 km"
