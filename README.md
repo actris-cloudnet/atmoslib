@@ -2,7 +2,10 @@
 
 [![Run tests](https://github.com/actris-cloudnet/atmoslib/actions/workflows/test.yml/badge.svg)](https://github.com/actris-cloudnet/atmoslib/actions/workflows/test.yml)
 
-Python library for atmospheric thermodynamics and microwave attenuation calculations.
+Python library for atmospheric thermodynamics and microwave attenuation
+calculations. This library is used in
+[CloudnetPy](https://github.com/actris-cloudnet/cloudnetpy) and related
+projects with focus on good performance and minimal dependencies.
 
 ## Installation
 
@@ -16,7 +19,7 @@ pip install atmoslib
 import numpy as np
 import atmoslib
 
-t = np.array([293.15, 283.15, 273.15])    # temperature (K)
+t = np.array([293.15, 283.15, 273.15])     # temperature (K)
 p = np.array([101325.0, 95000.0, 90000.0]) # pressure (Pa)
 q = np.array([0.010, 0.005, 0.001])        # specific humidity (kg/kg)
 
