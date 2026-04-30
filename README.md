@@ -34,6 +34,7 @@ NumPy rules).
 | `vapor_pressure(p, q)`                      | Vapor pressure of water (Pa)                                             |
 | `saturation_vapor_pressure(t)`              | Saturation vapor pressure (Pa, Goff-Gratch, liquid/ice/mixed)            |
 | `relative_humidity(t, p, q)`                | Relative humidity (1, liquid/ice/mixed)                                  |
+| `specific_humidity(t, p, rh)`               | Specific humidity (kg/kg)                                                |
 | `absolute_humidity(t, vp)`                  | Absolute humidity (kg/m³)                                                |
 | `dew_point_temperature(t, rh)`              | Dew-point temperature (K, Magnus)                                        |
 | `mixing_ratio(vp, p)`                       | Mixing ratio (kg/kg)                                                     |
