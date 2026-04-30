@@ -24,7 +24,7 @@ LATENT_HEAT_0: Final = 2.501e6
 P0: Final = 101325
 
 # Standard temperature at sea level (K)
-T_STD = 288.15
+T_STD: Final = 288.15
 
 # Standard gravitational acceleration (m s-2)
 G: Final = 9.80665
@@ -36,4 +36,4 @@ PA_TO_HPA: Final = 1 / HPA_TO_PA
 EARTH_RADIUS: Final = 6_371_229
 
 # Temperature lapse rate in troposphere (K m-1)
-L0 = 0.0065
+L0: Final = 0.0065

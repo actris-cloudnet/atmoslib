@@ -137,13 +137,13 @@ def specific_humidity(
     Args:
         t: Temperature (K).
         p: Pressure (Pa).
-        rh: Relative humidity (kg kg-1).
+        rh: Relative humidity (1).
         phase: ``"liquid"`` for over water (default), ``"ice"`` for over ice,
             or ``"mixed"`` to automatically select ice below 273.16 K and
             liquid at or above.
 
     Returns:
-        Specific humidity (1).
+        Specific humidity (kg kg-1).
     """
     vp = rh * saturation_vapor_pressure(t, phase)
     return (con.MW_RATIO * vp) / (p - (1 - con.MW_RATIO) * vp)
@@ -409,7 +409,7 @@ def hydrostatic_pressure(
     return np.cumprod(tmp, axis=-1)
 
 
-def isa_altitude(t: float, p: float) -> float:
+def isa_altitude(t: npt.NDArray, p: npt.NDArray) -> npt.NDArray:
     """Calculate altitude from observed pressure and temperature.
 
     Uses the International Standard Atmosphere (ISA) hypsometric formula. Only
@@ -425,7 +425,7 @@ def isa_altitude(t: float, p: float) -> float:
     return (t / con.L0) * (1 - (p / con.P0) ** (con.RS * con.L0 / con.G))
 
 
-def isa_pressure(gph: float) -> float:
+def isa_pressure(gph: npt.NDArray) -> npt.NDArray:
     """Calculate atmospheric pressure at given altitude.
 
     Uses the International Standard Atmosphere (ISA) hypsometric formula. Only
