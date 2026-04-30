@@ -15,5 +15,5 @@ from atmoslib import isa_pressure
         (5059.7, 53590),
     ],
 )
-def test_calc_pressure(altitude, pressure):
+def test_isa_pressure(altitude, pressure):
     assert_allclose(isa_pressure(altitude), pressure, atol=1)
