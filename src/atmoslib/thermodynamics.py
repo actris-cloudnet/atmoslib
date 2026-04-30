@@ -352,7 +352,7 @@ def geometric_height(gph: npt.NDArray) -> npt.NDArray:
     return con.EARTH_RADIUS * gph / (con.EARTH_RADIUS - gph)
 
 
-def barometric_pressure_profile(
+def hydrostatic_pressure(
     t: npt.NDArray,
     q: npt.NDArray,
     z: npt.NDArray,

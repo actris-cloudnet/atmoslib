@@ -14,9 +14,6 @@ from atmoslib.thermodynamics import (
     air_density as air_density,
 )
 from atmoslib.thermodynamics import (
-    barometric_pressure_profile as barometric_pressure_profile,
-)
-from atmoslib.thermodynamics import (
     c2k as c2k,
 )
 from atmoslib.thermodynamics import (
@@ -27,6 +24,9 @@ from atmoslib.thermodynamics import (
 )
 from atmoslib.thermodynamics import (
     geometric_height as geometric_height,
+)
+from atmoslib.thermodynamics import (
+    hydrostatic_pressure as hydrostatic_pressure,
 )
 from atmoslib.thermodynamics import (
     isa_altitude as isa_altitude,
