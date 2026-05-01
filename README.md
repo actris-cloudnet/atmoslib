@@ -1,4 +1,7 @@
-# atmoslib
+<h1>
+  <img src="logo.png" alt="" height="48" align="absmiddle">
+  &nbsp;atmoslib
+</h1>
 
 [![Run tests](https://github.com/actris-cloudnet/atmoslib/actions/workflows/test.yml/badge.svg)](https://github.com/actris-cloudnet/atmoslib/actions/workflows/test.yml)
 
