@@ -27,6 +27,7 @@ requires-python = ">=3.10"
 [project.optional-dependencies]
 dev = ["pre-commit", "release-version"]
 test = [
+  "hypothesis",
   "mypy",
   "pytest",
   "ruff",
