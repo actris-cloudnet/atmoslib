@@ -12,6 +12,11 @@ logger = logging.getLogger(__name__)
 # (R_vapor / R_dry - 1), used in moist-air virtual-temperature corrections
 _EPSILON_V = (1 - con.MW_RATIO) / con.MW_RATIO
 
+# ISA tropospheric exponent g/(R·L) ≈ 5.256, linking pressure and temperature
+# in the constant-lapse-rate hypsometric relation. Its reciprocal R·L/g appears
+# in the inverse formula for altitude.
+_ISA_EXPONENT = con.G / (con.RS * con.L0)
+
 PHASE: TypeAlias = Literal["liquid", "ice", "mixed"]
 
 
@@ -446,17 +451,19 @@ def hydrostatic_pressure(
 def isa_altitude(t: npt.NDArray, p: npt.NDArray) -> npt.NDArray:
     """Calculate altitude from observed pressure and temperature.
 
-    Uses the International Standard Atmosphere (ISA) hypsometric formula. Only
-    valid in troposphere up to 11 km.
+    Inverts the constant-lapse-rate hypsometric formula treating ``t`` as the
+    temperature at the target altitude (the value an in-situ thermometer would
+    read), eliminating the unknown sea-level reference. Only valid in the
+    troposphere up to 11 km.
 
     Args:
-        t: Observed temperature (K).
+        t: Observed temperature at the target altitude (K).
         p: Observed atmospheric pressure (Pa).
 
     Returns:
         Geopotential height (gpm).
     """
-    return (t / con.L0) * (1 - (p / con.P0) ** (con.RS * con.L0 / con.G))
+    return (t / con.L0) * ((con.P0 / p) ** (1 / _ISA_EXPONENT) - 1)
 
 
 def isa_pressure(gph: npt.NDArray) -> npt.NDArray:
@@ -474,4 +481,4 @@ def isa_pressure(gph: npt.NDArray) -> npt.NDArray:
     if np.any(gph >= 11_000):
         msg = "Valid only up to 11 km"
         raise ValueError(msg)
-    return con.P0 * (1 - con.L0 * gph / con.T_STD) ** (con.G / (con.RS * con.L0))
+    return con.P0 * (1 - con.L0 * gph / con.T_STD) ** _ISA_EXPONENT

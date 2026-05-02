@@ -95,11 +95,10 @@ def test_dew_point_at_saturation_equals_t(t):
 
 @given(st.floats(min_value=0.0, max_value=10_999.0, allow_nan=False))
 def test_isa_altitude_pressure_round_trip(z):
-    # `isa_altitude` and `isa_pressure` only form an exact inverse pair when
-    # the sea-level standard temperature `T_STD` is passed to `isa_altitude`
-    # (the formula treats `t` as the temperature at sea level, not at z).
+    # isa_altitude expects the in-situ temperature at z, not at sea level.
     p = isa_pressure(np.array(z))
-    z_back = isa_altitude(np.array(con.T_STD), p)
+    t_at_z = np.array(con.T_STD - con.L0 * z)
+    z_back = isa_altitude(t_at_z, p)
     assert np.isclose(z_back, z, rtol=1e-9, atol=1e-6)
 
 
