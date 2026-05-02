@@ -258,9 +258,9 @@ def equivalent_potential_temperature(
     """Calculate equivalent potential temperature.
 
     Uses the closed-form expression of Bolton (1980), accurate to within
-    ~0.3 K of the exact pseudoadiabatic value over the full tropospheric
+    ~0.02 K of the exact pseudoadiabatic value over the full tropospheric
     range. The LCL temperature is obtained from eq. 21 (using vapor
-    pressure) and ``theta_e`` from eq. 38.
+    pressure) and ``theta_e`` from eq. 39.
 
     Args:
         t: Temperature (K).
