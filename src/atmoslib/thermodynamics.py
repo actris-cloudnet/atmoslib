@@ -287,8 +287,9 @@ def wet_bulb_temperature(t: npt.NDArray, p: npt.NDArray, q: npt.NDArray) -> npt.
     """Calculate wet-bulb temperature iteratively.
 
     Uses Newton's method seeded with the closed-form Stull (2011)
-    approximation. The Stull guess is within ~0.3 K of the answer at sea
-    level and cuts the typical iteration count from ~7 to ~5.
+    approximation, which is within ~0.3 K of the answer at sea level
+    and noticeably reduces the number of Newton steps needed compared
+    to the trivial seed ``tw = td``.
 
     Args:
         t: Temperature (K).
