@@ -15,10 +15,10 @@ RS: Final = 287.058
 RW: Final = RS / MW_RATIO
 
 # Specific heat of dry air at constant pressure (J kg-1 K-1).
-# Canonical meteorology textbook value (Wallace & Hobbs, AMS Glossary);
-# rounded from the experimental ~1005.7 J kg-1 K-1 at 273.15 K / 1 atm.
-# Consistent with Bolton (1980) which implicitly uses Rd/Cp = 0.2854.
-CP_DRY: Final = 1005.0
+# Value from Wallace & Hobbs (2006), Atmospheric Science: An Introductory
+# Survey, 2nd ed., Appendix A. The AMS Glossary / NIST experimental value
+# at 273 K is 1005.7 +/- 2.5; the 0.2% difference is negligible here.
+CP_DRY: Final = 1004.0
 
 # Latent heat of vaporization at the triple point T0 (J kg-1)
 LATENT_HEAT_0: Final = 2.501e6
