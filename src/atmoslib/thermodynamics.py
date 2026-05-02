@@ -251,10 +251,10 @@ def equivalent_potential_temperature(
 ) -> npt.NDArray:
     """Calculate equivalent potential temperature.
 
-    Uses the first-order linearization of the simplified moist-adiabatic
-    expression: ``theta_e ≈ theta * (1 + Lv * r / (Cp * T))``. Accurate enough
-    for most boundary-layer applications; for higher precision see Bolton
-    (1980), https://doi.org/10.1175/1520-0493(1980)108<1046:TCOEPT>2.0.CO;2.
+    Uses the closed-form expression of Bolton (1980), accurate to within
+    ~0.3 K of the exact pseudoadiabatic value over the full tropospheric
+    range. The LCL temperature is obtained from eq. 21 (using vapor
+    pressure) and ``theta_e`` from eq. 38.
 
     Args:
         t: Temperature (K).
@@ -263,12 +263,21 @@ def equivalent_potential_temperature(
 
     Returns:
         Equivalent potential temperature (K).
+
+    References:
+        Bolton, D. (1980). The Computation of Equivalent Potential
+        Temperature. Mon. Wea. Rev., 108, 1046-1053.
+        https://doi.org/10.1175/1520-0493(1980)108<1046:TCOEPT>2.0.CO;2
     """
-    theta = potential_temperature(t, p)
-    vp = vapor_pressure(p, q)
-    mr = mixing_ratio(vp, p)
-    lv = latent_heat_of_vaporization(t)
-    return theta * (1 + lv * mr / (con.CP_DRY * t))
+    e = vapor_pressure(p, q)
+    r = mixing_ratio(e, p)
+    # Floor e to avoid log(0) at q=0; r is zero there so the T_L-dependent
+    # factors collapse to 1 regardless of the (now finite) T_L value.
+    e_hpa = np.maximum(e, 1e-10) * con.PA_TO_HPA
+    t_l = 2840.0 / (3.5 * np.log(t) - np.log(e_hpa) - 4.805) + 55.0
+    kappa = con.RS / con.CP_DRY
+    theta_dl = t * (con.P0 / (p - e)) ** kappa * (t / t_l) ** (0.28 * r)
+    return theta_dl * np.exp((3036.0 / t_l - 1.78) * r * (1.0 + 0.448 * r))
 
 
 def wet_bulb_temperature(t: npt.NDArray, p: npt.NDArray, q: npt.NDArray) -> npt.NDArray:

@@ -66,6 +66,15 @@ def test_equivalent_potential_temperature_dry_equals_potential():
     np.testing.assert_allclose(theta_e, theta)
 
 
+def test_equivalent_potential_temperature_known_value():
+    # Tropical surface parcel: T=300 K, p=1000 hPa, q=20 g/kg.
+    # Bolton (1980) eq. 38 with LCL from eq. 21 gives theta_e ≈ 361.4 K.
+    theta_e = equivalent_potential_temperature(
+        np.array(300.0), np.array(100000.0), np.array(0.020)
+    )
+    assert theta_e == pytest.approx(361.4, abs=0.2)
+
+
 def test_equivalent_potential_temperature_above_potential_when_moist():
     rng = np.random.default_rng(1)
     t = rng.uniform(273.15, 303.15, size=15)
