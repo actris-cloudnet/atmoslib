@@ -3,7 +3,7 @@
   &nbsp;atmoslib
 </h1>
 
-[![Run tests](https://github.com/actris-cloudnet/atmoslib/actions/workflows/test.yml/badge.svg)](https://github.com/actris-cloudnet/atmoslib/actions/workflows/test.yml)
+[![CI](https://github.com/actris-cloudnet/atmoslib/actions/workflows/test.yml/badge.svg)](https://github.com/actris-cloudnet/atmoslib/actions/workflows/test.yml)
 [![PyPI version](https://img.shields.io/pypi/v/atmoslib.svg)](https://pypi.org/project/atmoslib/)
 
 Python library for atmospheric thermodynamics and microwave attenuation
