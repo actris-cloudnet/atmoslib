@@ -30,7 +30,7 @@ def test_virtual_temperature_above_dry_temperature():
 
 def test_potential_temperature_at_reference_pressure():
     t = np.array([293.15, 250.0, 230.0])
-    p = np.full_like(t, 101325.0)  # Default p0
+    p = np.full_like(t, 100000.0)  # Default p0 (1000 hPa)
     np.testing.assert_allclose(potential_temperature(t, p), t)
 
 
@@ -43,17 +43,17 @@ def test_potential_temperature_increases_aloft():
 
 
 def test_potential_temperature_known_value():
-    # Air at 280 K, 800 hPa, brought to 1013.25 hPa
-    # theta = 280 * (101325/80000)^(287.058/1004) ≈ 299.57
+    # Air at 280 K, 800 hPa, brought to 1000 hPa
+    # theta = 280 * (100000/80000)^(287.058/1004) ≈ 298.42
     theta = potential_temperature(np.array(280.0), np.array(80000.0))
-    assert theta == pytest.approx(299.57, abs=0.1)
+    assert theta == pytest.approx(298.42, abs=0.1)
 
 
 def test_potential_temperature_custom_p0():
     t = np.array(280.0)
     p = np.array(80000.0)
     theta_default = potential_temperature(t, p)
-    theta_explicit = potential_temperature(t, p, p0=101325.0)
+    theta_explicit = potential_temperature(t, p, p0=100000.0)
     np.testing.assert_allclose(theta_default, theta_explicit)
 
 
@@ -68,11 +68,11 @@ def test_equivalent_potential_temperature_dry_equals_potential():
 
 def test_equivalent_potential_temperature_known_value():
     # Tropical surface parcel: T=300 K, p=1000 hPa, q=20 g/kg.
-    # Bolton (1980) eq. 38 with LCL from eq. 21 gives theta_e ≈ 361.4 K.
+    # Bolton (1980) eq. 38 with LCL from eq. 21 gives theta_e ≈ 360.1 K.
     theta_e = equivalent_potential_temperature(
         np.array(300.0), np.array(100000.0), np.array(0.020)
     )
-    assert theta_e == pytest.approx(361.4, abs=0.2)
+    assert theta_e == pytest.approx(360.1, abs=0.2)
 
 
 def test_equivalent_potential_temperature_above_potential_when_moist():

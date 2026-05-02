@@ -231,14 +231,15 @@ def virtual_temperature(t: npt.NDArray, q: npt.NDArray) -> npt.NDArray:
 
 
 def potential_temperature(
-    t: npt.NDArray, p: npt.NDArray, p0: float = con.P0
+    t: npt.NDArray, p: npt.NDArray, p0: float = con.P_REF
 ) -> npt.NDArray:
     """Calculate potential temperature.
 
     Args:
         t: Temperature (K).
         p: Pressure (Pa).
-        p0: Reference pressure (Pa). Defaults to standard sea-level pressure.
+        p0: Reference pressure (Pa). Defaults to the meteorological reference
+            of 1000 hPa.
 
     Returns:
         Potential temperature (K).
@@ -247,7 +248,7 @@ def potential_temperature(
 
 
 def equivalent_potential_temperature(
-    t: npt.NDArray, p: npt.NDArray, q: npt.NDArray
+    t: npt.NDArray, p: npt.NDArray, q: npt.NDArray, p0: float = con.P_REF
 ) -> npt.NDArray:
     """Calculate equivalent potential temperature.
 
@@ -260,6 +261,8 @@ def equivalent_potential_temperature(
         t: Temperature (K).
         p: Pressure (Pa).
         q: Specific humidity (kg kg-1).
+        p0: Reference pressure (Pa). Defaults to the meteorological reference
+            of 1000 hPa.
 
     Returns:
         Equivalent potential temperature (K).
@@ -276,7 +279,7 @@ def equivalent_potential_temperature(
     e_hpa = np.maximum(e, 1e-10) * con.PA_TO_HPA
     t_l = 2840.0 / (3.5 * np.log(t) - np.log(e_hpa) - 4.805) + 55.0
     kappa = con.RS / con.CP_DRY
-    theta_dl = t * (con.P0 / (p - e)) ** kappa * (t / t_l) ** (0.28 * r)
+    theta_dl = t * (p0 / (p - e)) ** kappa * (t / t_l) ** (0.28 * r)
     return theta_dl * np.exp((3036.0 / t_l - 1.78) * r * (1.0 + 0.448 * r))
 
 
