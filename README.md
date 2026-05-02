@@ -47,7 +47,7 @@ NumPy rules).
 | `latent_heat_of_vaporization(t)`            | Temperature-dependent latent heat of vaporization (J/kg)                 |
 | `virtual_temperature(t, q)`                 | Virtual temperature (K)                                                  |
 | `potential_temperature(t, p)`               | Potential temperature (K)                                                |
-| `equivalent_potential_temperature(t, p, q)` | Equivalent potential temperature (K, linearized approx.)                 |
+| `equivalent_potential_temperature(t, p, q)` | Equivalent potential temperature (K, Bolton 1980)                        |
 | `air_density(t, p, mr)`                     | Moist-air density (kg/m³)                                                |
 | `adiabatic_lwc_gradient(t, p)`              | Adiabatic vertical gradient of LWC at cloud base (kg/m³/m)               |
 | `hydrostatic_pressure(t, q, z, p_sfc)`      | Pressure profile from surface value via hypsometric equation (Pa)        |
