@@ -376,19 +376,16 @@ def adiabatic_lwc_gradient(t: npt.NDArray, p: npt.NDArray) -> npt.NDArray:
     References:
         Brenguier, 1991, https://doi.org/10.1175/1520-0469(1991)048<0264:POTCPA>2.0.CO;2
     """
-    svp = saturation_vapor_pressure(t)
-    svp_mr = mixing_ratio(svp, p)
-    rho = air_density(t, p, svp_mr)
+    es = saturation_vapor_pressure(t)
+    qs = mixing_ratio(es, p)
+    rho = air_density(t, p, qs)
     Lv = latent_heat_of_vaporization(t)
-
-    qs = svp_mr  # kg kg-1
-    pa = rho  # kg m-3
-    es = svp  # Pa
 
     # See Appendix B in Brenguier (1991) for the derivation
     dqs_dp = (
         -(1 - (con.CP_DRY * t) / (con.MW_RATIO * Lv))
-        * (((con.CP_DRY * t) / (con.MW_RATIO * Lv)) + ((Lv * qs * pa) / (p - es))) ** -1
+        * (((con.CP_DRY * t) / (con.MW_RATIO * Lv)) + ((Lv * qs * rho) / (p - es)))
+        ** -1
         * (con.MW_RATIO * es)
         * (p - es) ** -2
     )
