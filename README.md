@@ -1,5 +1,8 @@
 <h1>
-  <img src="logo.png" alt="" height="48" align="absmiddle">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="logo-dark.svg">
+    <img src="logo.svg" alt="" height="45" align="absmiddle">
+  </picture>
   &nbsp;atmoslib
 </h1>
 
