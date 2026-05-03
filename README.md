@@ -12,7 +12,7 @@
 Python library for atmospheric thermodynamics and microwave attenuation
 calculations. This library is used in
 [CloudnetPy](https://github.com/actris-cloudnet/cloudnetpy) and related
-projects with focus on good performance and minimal dependencies.
+projects with focus on performance and minimal dependencies.
 
 ## Installation
 
@@ -33,35 +33,35 @@ q = np.array([0.010, 0.005, 0.001])        # specific humidity (kg/kg)
 tw = atmoslib.wet_bulb_temperature(t, p, q)
 ```
 
-All inputs accept scalars or NumPy arrays of any shape (broadcasting follows
+Most inputs accept scalars or NumPy arrays of any shape (broadcasting follows
 NumPy rules).
 
 ## Available functions
 
-| Function                                    | Description                                                              |
-| ------------------------------------------- | ------------------------------------------------------------------------ |
-| `wet_bulb_temperature(t, p, q)`             | Wet-bulb temperature (K)                                                 |
-| `vapor_pressure(p, q)`                      | Vapor pressure of water (Pa)                                             |
-| `saturation_vapor_pressure(t)`              | Saturation vapor pressure (Pa, Goff-Gratch, liquid/ice/mixed)            |
-| `relative_humidity(t, p, q)`                | Relative humidity (1, liquid/ice/mixed)                                  |
-| `specific_humidity(t, p, rh)`               | Specific humidity (kg/kg, liquid/ice/mixed)                              |
-| `absolute_humidity(t, vp)`                  | Absolute humidity (kg/m³)                                                |
-| `dew_point_temperature(t, rh)`              | Dew-point temperature (K, Magnus)                                        |
-| `mixing_ratio(vp, p)`                       | Mixing ratio (kg/kg)                                                     |
-| `latent_heat_of_vaporization(t)`            | Temperature-dependent latent heat of vaporization (J/kg)                 |
-| `virtual_temperature(t, q)`                 | Virtual temperature (K)                                                  |
-| `potential_temperature(t, p)`               | Potential temperature (K)                                                |
-| `equivalent_potential_temperature(t, p, q)` | Equivalent potential temperature (K, Bolton 1980)                        |
-| `air_density(t, p, mr)`                     | Moist-air density (kg/m³)                                                |
-| `adiabatic_lwc_gradient(t, p)`              | Adiabatic vertical gradient of LWC at cloud base (kg/m³/m)               |
-| `hydrostatic_pressure(t, q, z, p_sfc)`      | Pressure profile from surface value via hypsometric equation (Pa)        |
-| `geometric_height(gph)`                     | Geometric height from geopotential height (m, ECMWF)                     |
-| `isa_altitude(t, p)`                        | Geopotential height from pressure and temperature (gpm, ISA)             |
-| `isa_pressure(gph)`                         | Pressure from geopotential height (Pa, ISA)                              |
-| `c2k(t)` / `k2c(t)`                         | Celsius ↔ Kelvin conversion                                             |
-| `liquid_water_specific_attenuation(t, f)`   | Cloud liquid water specific attenuation ((dB km⁻¹)/(g m⁻³), ITU-R P.840) |
-| `gas_specific_attenuation(t, p, e, f)`      | Dry-air + water-vapor specific attenuation (dB km⁻¹, ITU-R P.676)        |
-| `rain_specific_attenuation(R, f)`           | Rain specific attenuation (dB km⁻¹, ITU-R P.838)                         |
+| Function                                    | Description                                                                   |
+| ------------------------------------------- | ----------------------------------------------------------------------------- |
+| `wet_bulb_temperature(t, p, q)`             | Wet-bulb temperature (K)                                                      |
+| `vapor_pressure(p, q)`                      | Vapor pressure of water (Pa)                                                  |
+| `saturation_vapor_pressure(t)`              | Saturation vapor pressure (Pa, Goff-Gratch, liquid/ice/mixed)                 |
+| `relative_humidity(t, p, q)`                | Relative humidity (0–1, liquid/ice/mixed)                                     |
+| `specific_humidity(t, p, rh)`               | Specific humidity (kg kg⁻¹, liquid/ice/mixed)                                 |
+| `absolute_humidity(t, vp)`                  | Absolute humidity (kg m⁻³)                                                    |
+| `dew_point_temperature(t, rh)`              | Dew-point temperature (K, Magnus)                                             |
+| `mixing_ratio(vp, p)`                       | Mixing ratio (kg kg⁻¹)                                                        |
+| `latent_heat_of_vaporization(t)`            | Latent heat of vaporization (J kg⁻¹)                                          |
+| `virtual_temperature(t, q)`                 | Virtual temperature (K)                                                       |
+| `potential_temperature(t, p)`               | Potential temperature (K)                                                     |
+| `equivalent_potential_temperature(t, p, q)` | Equivalent potential temperature (K, Bolton 1980)                             |
+| `air_density(t, p, mr)`                     | Moist-air density (kg m⁻³)                                                    |
+| `adiabatic_lwc_gradient(t, p)`              | Adiabatic vertical gradient of LWC at cloud base (kg m⁻³ m⁻¹, Brenguier 1991) |
+| `hydrostatic_pressure(t, q, z, p_sfc)`      | Pressure profile from surface value via hypsometric equation (Pa)             |
+| `geometric_height(gph)`                     | Geometric height from geopotential height (m, ECMWF)                          |
+| `isa_altitude(t, p)`                        | Geopotential height from pressure and temperature (gpm, ISA)                  |
+| `isa_pressure(gph)`                         | Pressure from geopotential height (Pa, ISA)                                   |
+| `c2k(t)` / `k2c(t)`                         | Celsius ↔ Kelvin conversion                                                  |
+| `liquid_water_specific_attenuation(t, f)`   | Cloud liquid water specific attenuation (dB km⁻¹ per g m⁻³, ITU-R P.840)      |
+| `gas_specific_attenuation(t, p, e, f)`      | Dry-air + water-vapor specific attenuation (dB km⁻¹, ITU-R P.676)             |
+| `rain_specific_attenuation(R, f)`           | Rain specific attenuation (dB km⁻¹, ITU-R P.838)                              |
 
 See the docstrings for argument details and references.
 
