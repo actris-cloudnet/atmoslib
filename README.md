@@ -52,8 +52,8 @@ NumPy rules).
 | `air_density(t, p, mr)`                     | Moist-air density (kg/m³)                                                |
 | `adiabatic_lwc_gradient(t, p)`              | Adiabatic vertical gradient of LWC at cloud base (kg/m³/m)               |
 | `hydrostatic_pressure(t, q, z, p_sfc)`      | Pressure profile from surface value via hypsometric equation (Pa)        |
-| `geometric_height(gph)`                     | Geopotential height to geometric height (m, ECMWF)                       |
-| `isa_altitude(t, p)`                        | Altitude from pressure and temperature (gpm, ISA)                        |
+| `geometric_height(gph)`                     | Geometric height from geopotential height (m, ECMWF)                     |
+| `isa_altitude(t, p)`                        | Geopotential height from pressure and temperature (gpm, ISA)             |
 | `isa_pressure(gph)`                         | Pressure from geopotential height (Pa, ISA)                              |
 | `c2k(t)` / `k2c(t)`                         | Celsius ↔ Kelvin conversion                                             |
 | `liquid_water_specific_attenuation(t, f)`   | Cloud liquid water specific attenuation ((dB km⁻¹)/(g m⁻³), ITU-R P.840) |
