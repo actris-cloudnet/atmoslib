@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.4.0 – 2026-05-03
+
+- Add ITU-R P.838-3 rain specific attenuation
+
 ## 2.3.2 – 2026-05-02
 
 - Fix isa_altitude to invert hypsometric formula at observed altitude
