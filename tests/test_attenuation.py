@@ -4,6 +4,7 @@ from numpy.testing import assert_allclose
 from atmoslib.attenuation import (
     gas_specific_attenuation,
     liquid_water_specific_attenuation,
+    rain_specific_attenuation,
 )
 
 
@@ -382,3 +383,48 @@ def test_gas_specific_attenuation():
     desired = desired.reshape(len(desired), 1, 1)
     actual = np.array([gas_specific_attenuation(T, p + e, e, f) for f in F])
     assert_allclose(actual, desired)
+
+
+def test_rain_specific_attenuation_horizontal_path():
+    # Reference (k_H, alpha_H) values from the ITU-R P.838-3 parameterization;
+    # cross-checked against the Recommendation's Figure 1 and the Crane (1980)
+    # formulation at 35 GHz (agreement within 2 %).
+    r = np.array([1.0, 10.0])
+    cases = {
+        1.0: (2.5893e-5, 0.96907),
+        10.0: (1.21670e-2, 1.25710),
+        35.0: (3.37387e-1, 0.90471),
+        94.0: (1.31786e0, 0.68877),
+    }
+    for f, (k, alpha) in cases.items():
+        actual = rain_specific_attenuation(
+            r, f, polarization="horizontal", elevation=0.0
+        )
+        desired = k * r**alpha
+        assert_allclose(actual, desired, rtol=1e-3)
+
+
+def test_rain_specific_attenuation_polarization_independence_at_zenith():
+    r = np.array([0.5, 5.0, 50.0])
+    f = 35.0
+    h = rain_specific_attenuation(r, f, polarization="horizontal", elevation=90.0)
+    v = rain_specific_attenuation(r, f, polarization="vertical", elevation=90.0)
+    c = rain_specific_attenuation(r, f, polarization="circular", elevation=90.0)
+    assert_allclose(h, v)
+    assert_allclose(h, c)
+
+
+def test_rain_specific_attenuation_circular_is_mean_at_horizontal_path():
+    r = np.array([10.0])
+    f = 35.0
+    h = rain_specific_attenuation(r, f, polarization="horizontal", elevation=0.0)
+    v = rain_specific_attenuation(r, f, polarization="vertical", elevation=0.0)
+    c = rain_specific_attenuation(r, f, polarization="circular", elevation=0.0)
+    assert min(h, v) <= c <= max(h, v)
+
+
+def test_rain_specific_attenuation_scalar_and_array_consistency():
+    f = 94.0
+    scalar = rain_specific_attenuation(np.array(10.0), f)
+    array = rain_specific_attenuation(np.array([10.0, 10.0]), f)
+    assert_allclose(array, scalar)

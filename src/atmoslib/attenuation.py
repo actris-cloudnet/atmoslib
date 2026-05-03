@@ -1,9 +1,15 @@
-"""Atmospheric attenuation coefficients (ITU-R P.676 / P.840)."""
+"""Atmospheric attenuation coefficients (ITU-R P.676 / P.838 / P.840)."""
+
+from typing import Literal, TypeAlias
 
 import numpy as np
 import numpy.typing as npt
 
 from atmoslib import constants as con
+
+POLARIZATION: TypeAlias = Literal["horizontal", "vertical", "circular"]
+
+_TAU = {"horizontal": 0.0, "vertical": np.pi / 2, "circular": np.pi / 4}
 
 
 def liquid_water_specific_attenuation(
@@ -68,6 +74,58 @@ def gas_specific_attenuation(
     oxygen = _oxygen_refractivity(pd, e, f, theta)
     vapor = _vapor_refractivity(pd, e, f, theta)
     return 0.1820 * f * (oxygen + vapor)
+
+
+def rain_specific_attenuation(
+    r: npt.NDArray,
+    f: float | np.floating,
+    polarization: POLARIZATION = "horizontal",
+    elevation: float = 90.0,
+) -> npt.NDArray:
+    """Calculate rain specific attenuation.
+
+    Valid for frequency 1-1000 GHz.
+
+    Args:
+        r: Rain rate (mm h-1).
+        f: Frequency (GHz).
+        polarization: Wave polarization. ``"horizontal"`` (default),
+            ``"vertical"``, or ``"circular"``.
+        elevation: Path elevation angle from the horizontal (degrees).
+            Defaults to 90 (zenith), for which the polarization choice has
+            no effect. Use 0 for a horizontal path (e.g., terrestrial link).
+
+    Returns:
+        Rain specific attenuation (dB km-1).
+
+    References:
+        ITU-R P.838-3: Specific attenuation model for rain for use in
+        prediction methods.
+        https://www.itu.int/rec/R-REC-P.838-3-200503-I/en
+    """
+    log_f = np.log10(f)
+    k_h = 10 ** _p838_log_sum(log_f, *_P838_K_H)
+    k_v = 10 ** _p838_log_sum(log_f, *_P838_K_V)
+    a_h = _p838_log_sum(log_f, *_P838_ALPHA_H)
+    a_v = _p838_log_sum(log_f, *_P838_ALPHA_V)
+
+    weight = np.cos(np.deg2rad(elevation)) ** 2 * np.cos(2 * _TAU[polarization])
+
+    kh_ah = k_h * a_h
+    kv_av = k_v * a_v
+    k = (k_h + k_v + (k_h - k_v) * weight) / 2
+    alpha = (kh_ah + kv_av + (kh_ah - kv_av) * weight) / (2 * k)
+    return k * r**alpha
+
+
+def _p838_log_sum(
+    log_f: float | np.floating,
+    gaussians: npt.NDArray,
+    m: float,
+    c: float,
+) -> npt.NDArray:
+    a, b, sigma = gaussians.T
+    return np.sum(a * np.exp(-(((log_f - b) / sigma) ** 2))) + m * log_f + c
 
 
 def _line_shape(
@@ -216,3 +274,58 @@ _VAPOR_TABLE = np.array(
         [1780.000000, 17506.0, 0.952, 196.3, 2.00, 24.15, 5.00],
     ]
 ).T
+
+# Coefficients for rain specific attenuation (ITU-R P.838-3 Annex 1).
+_P838_K_H = (
+    np.array(
+        [
+            [-5.33980, -0.10008, 1.13098],
+            [-0.35351, 1.26970, 0.45400],
+            [-0.23789, 0.86036, 0.15354],
+            [-0.94158, 0.64552, 0.16817],
+        ]
+    ),
+    -0.18961,
+    0.71147,
+)
+
+_P838_K_V = (
+    np.array(
+        [
+            [-3.80595, 0.56934, 0.81061],
+            [-3.44965, -0.22911, 0.51059],
+            [-0.39902, 0.73042, 0.11899],
+            [0.50167, 1.07319, 0.27195],
+        ]
+    ),
+    -0.16398,
+    0.63297,
+)
+
+_P838_ALPHA_H = (
+    np.array(
+        [
+            [-0.14318, 1.82442, -0.55187],
+            [0.29591, 0.77564, 0.19822],
+            [0.32177, 0.63773, 0.13164],
+            [-5.37610, -0.96230, 1.47828],
+            [16.1721, -3.29980, 3.43990],
+        ]
+    ),
+    0.67849,
+    -1.95537,
+)
+
+_P838_ALPHA_V = (
+    np.array(
+        [
+            [-0.07771, 2.33840, -0.76284],
+            [0.56727, 0.95545, 0.54039],
+            [-0.20238, 1.14520, 0.26809],
+            [-48.2991, 0.791669, 0.116226],
+            [48.5833, 0.791459, 0.116479],
+        ]
+    ),
+    -0.053739,
+    0.83433,
+)

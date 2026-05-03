@@ -58,6 +58,7 @@ NumPy rules).
 | `c2k(t)` / `k2c(t)`                         | Celsius ↔ Kelvin conversion                                             |
 | `liquid_water_specific_attenuation(t, f)`   | Cloud liquid water specific attenuation ((dB km⁻¹)/(g m⁻³), ITU-R P.840) |
 | `gas_specific_attenuation(t, p, e, f)`      | Dry-air + water-vapor specific attenuation (dB km⁻¹, ITU-R P.676)        |
+| `rain_specific_attenuation(R, f)`           | Rain specific attenuation (dB km⁻¹, ITU-R P.838)                         |
 
 See the docstrings for argument details and references.
 
