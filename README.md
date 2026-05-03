@@ -3,7 +3,7 @@
     <source media="(prefers-color-scheme: dark)" srcset="logo-dark.svg">
     <img src="logo.svg" alt="" height="45" align="absmiddle">
   </picture>
-  &nbsp;atmoslib
+  atmoslib
 </h1>
 
 [![CI](https://github.com/actris-cloudnet/atmoslib/actions/workflows/test.yml/badge.svg)](https://github.com/actris-cloudnet/atmoslib/actions/workflows/test.yml)
