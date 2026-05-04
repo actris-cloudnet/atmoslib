@@ -1,7 +1,7 @@
 <h1>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="logo-dark.svg">
-    <img src="logo.svg" alt="" height="45" align="absmiddle">
+    <source media="(prefers-color-scheme: dark)" srcset="logo-dark.svg?v=2">
+    <img src="logo.svg?v=2" alt="" height="45" align="absmiddle">
   </picture>
   atmoslib
 </h1>
@@ -50,7 +50,7 @@ NumPy rules).
 | `virtual_temperature(t, q)`                 | Virtual temperature (K)                                                       |
 | `potential_temperature(t, p)`               | Potential temperature (K)                                                     |
 | `equivalent_potential_temperature(t, p, q)` | Equivalent potential temperature (K, Bolton 1980)                             |
-| `wet_bulb_temperature(t, p, q)`             | Wet-bulb temperature (K)                                                      |
+| `wet_bulb_temperature(t, p, q)`             | Wet-bulb temperature (K, iterative)                                           |
 | `latent_heat_of_vaporization(t)`            | Latent heat of vaporization (J kg⁻¹)                                          |
 | `air_density(t, p, mr)`                     | Moist-air density (kg m⁻³)                                                    |
 | `adiabatic_lwc_gradient(t, p)`              | Adiabatic vertical gradient of LWC at cloud base (kg m⁻³ m⁻¹, Brenguier 1991) |
