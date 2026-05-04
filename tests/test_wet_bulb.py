@@ -107,3 +107,19 @@ def test_known_psychrometric_values(t_c, p_pa, rh, expected_c):
     tw = wet_bulb_temperature(t, p, q)
     tw_c = float(tw) - 273.15
     assert tw_c == pytest.approx(expected_c, abs=1.0)
+
+
+@pytest.mark.parametrize(
+    "t_k, p_pa, q, expected_k",
+    [
+        # Test values from cloudnetpy (original source unknown)
+        (280, 101330, 0.001, 273.21),
+        (250, 90000, 0.001, 251.03),
+    ],
+)
+def test_known_psychrometric_values2(t_k, p_pa, q, expected_k):
+    t = np.array(t_k)
+    p = np.array(p_pa)
+    q = np.array(q)
+    tw = wet_bulb_temperature(t, p, q)
+    assert tw == pytest.approx(expected_k, abs=0.3)
