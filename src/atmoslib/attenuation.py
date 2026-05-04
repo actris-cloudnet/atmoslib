@@ -9,7 +9,11 @@ from atmoslib import constants as con
 
 POLARIZATION: TypeAlias = Literal["horizontal", "vertical", "circular"]
 
-_TAU = {"horizontal": 0.0, "vertical": np.pi / 2, "circular": np.pi / 4}
+_TAU: dict[POLARIZATION, float] = {
+    "horizontal": 0.0,  # 0 degrees
+    "vertical": np.pi / 2,  # 90 degrees
+    "circular": np.pi / 4,  # 45 degrees
+}
 
 
 def liquid_water_specific_attenuation(
@@ -28,7 +32,7 @@ def liquid_water_specific_attenuation(
 
     References:
         ITU-R P.840-9: Attenuation due to clouds and fog.
-        https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.840-9-202308-I!!PDF-E.pdf
+        https://www.itu.int/rec/R-REC-P.840-9-202308-I/en
     """
     theta1 = 300 / t - 1
     e0 = 77.66 + 103.3 * theta1
@@ -65,7 +69,7 @@ def gas_specific_attenuation(
 
     References:
         ITU-R P.676-13: Attenuation by atmospheric gases and related effects.
-        https://www.itu.int/dms_pubrec/itu-r/rec/p/R-REC-P.676-13-202208-I!!PDF-E.pdf
+        https://www.itu.int/rec/R-REC-P.676-13-202208-I/en
     """
     p = p * con.PA_TO_HPA
     e = e * con.PA_TO_HPA
@@ -275,7 +279,7 @@ _VAPOR_TABLE = np.array(
     ]
 ).T
 
-# Coefficients for rain specific attenuation (ITU-R P.838-3 Annex 1).
+# Coefficients for rain specific attenuation (ITU-R P.838-3 Table 1).
 _P838_K_H = (
     np.array(
         [
@@ -289,6 +293,7 @@ _P838_K_H = (
     0.71147,
 )
 
+# Coefficients for rain specific attenuation (ITU-R P.838-3 Table 2).
 _P838_K_V = (
     np.array(
         [
@@ -302,6 +307,7 @@ _P838_K_V = (
     0.63297,
 )
 
+# Coefficients for rain specific attenuation (ITU-R P.838-3 Table 3).
 _P838_ALPHA_H = (
     np.array(
         [
@@ -316,6 +322,7 @@ _P838_ALPHA_H = (
     -1.95537,
 )
 
+# Coefficients for rain specific attenuation (ITU-R P.838-3 Table 4).
 _P838_ALPHA_V = (
     np.array(
         [
