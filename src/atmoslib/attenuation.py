@@ -77,7 +77,7 @@ def gas_specific_attenuation(
 
 
 def rain_specific_attenuation(
-    r: npt.NDArray,
+    r: float | npt.NDArray,
     f: float | np.floating,
     polarization: POLARIZATION = "horizontal",
     elevation: float = 90.0,
