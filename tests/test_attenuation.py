@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose
 
 from atmoslib.attenuation import (
@@ -17,6 +18,18 @@ def test_liquid_water_specific_attenuation():
     desired = np.array([[0.005], [0.015], [0.058], [0.70], [4.09]])
     actual = np.array([liquid_water_specific_attenuation(T, f) for f in F])
     assert_allclose(actual, desired, rtol=1.25)
+
+
+def test_liquid_water_specific_attenuation_frequency_range():
+    T = np.array([273.15])
+    with pytest.raises(ValueError, match="f should be between 1 and 200 GHz"):
+        liquid_water_specific_attenuation(T, 0.5)
+    with pytest.raises(ValueError, match="f should be between 1 and 200 GHz"):
+        liquid_water_specific_attenuation(T, 201)
+    with pytest.raises(ValueError, match="f should be between 1 and 200 GHz"):
+        liquid_water_specific_attenuation(T, -10)
+    liquid_water_specific_attenuation(T, 1)
+    liquid_water_specific_attenuation(T, 200)
 
 
 def test_gas_specific_attenuation():
@@ -384,6 +397,20 @@ def test_gas_specific_attenuation():
     desired = desired.reshape(len(desired), 1, 1)
     actual = np.array([gas_specific_attenuation(T, p + e, e, f) for f in F])
     assert_allclose(actual, desired)
+
+
+def test_gas_specific_attenuation_frequency_range():
+    T = np.array([288.15])
+    p = np.array([101325.0])
+    e = np.array([997.288879])
+    with pytest.raises(ValueError, match="f should be between 1 and 1000 GHz"):
+        gas_specific_attenuation(T, p, e, 0.5)
+    with pytest.raises(ValueError, match="f should be between 1 and 1000 GHz"):
+        gas_specific_attenuation(T, p, e, 1001)
+    with pytest.raises(ValueError, match="f should be between 1 and 1000 GHz"):
+        gas_specific_attenuation(T, p, e, -10)
+    gas_specific_attenuation(T, p, e, 1)
+    gas_specific_attenuation(T, p, e, 1000)
 
 
 def test_rain_specific_attenuation():
@@ -770,3 +797,15 @@ def test_rain_specific_attenuation_scalar_and_array_consistency():
     scalar = rain_specific_attenuation(np.array(10.0), f)
     array = rain_specific_attenuation(np.array([10.0, 10.0]), f)
     assert_allclose(array, scalar)
+
+
+def test_rain_specific_attenuation_frequency_range():
+    r = np.array([10.0])
+    with pytest.raises(ValueError, match="f should be between 1 and 1000 GHz"):
+        rain_specific_attenuation(r, 0.5)
+    with pytest.raises(ValueError, match="f should be between 1 and 1000 GHz"):
+        rain_specific_attenuation(r, 1001)
+    with pytest.raises(ValueError, match="f should be between 1 and 1000 GHz"):
+        rain_specific_attenuation(r, -10)
+    rain_specific_attenuation(r, 1)
+    rain_specific_attenuation(r, 1000)

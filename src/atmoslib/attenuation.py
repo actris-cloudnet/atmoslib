@@ -34,6 +34,9 @@ def liquid_water_specific_attenuation(
         ITU-R P.840-9: Attenuation due to clouds and fog.
         https://www.itu.int/rec/R-REC-P.840-9-202308-I/en
     """
+    if f < 1 or f > 200:
+        msg = "f should be between 1 and 200 GHz"
+        raise ValueError(msg)
     theta1 = 300 / t - 1
     e0 = 77.66 + 103.3 * theta1
     e1 = 0.0671 * e0
@@ -71,6 +74,9 @@ def gas_specific_attenuation(
         ITU-R P.676-13: Attenuation by atmospheric gases and related effects.
         https://www.itu.int/rec/R-REC-P.676-13-202208-I/en
     """
+    if f < 1 or f > 1000:
+        msg = "f should be between 1 and 1000 GHz"
+        raise ValueError(msg)
     p = p * con.PA_TO_HPA
     e = e * con.PA_TO_HPA
     pd = p - e
@@ -88,7 +94,7 @@ def rain_specific_attenuation(
 ) -> npt.NDArray:
     """Calculate rain specific attenuation.
 
-    Valid for frequency 1-1000 GHz.
+    Valid for frequency up to 1000 GHz.
 
     Args:
         r: Rain rate (mm h-1).
@@ -107,6 +113,10 @@ def rain_specific_attenuation(
         prediction methods.
         https://www.itu.int/rec/R-REC-P.838-3-200503-I/en
     """
+    if f < 1 or f > 1000:
+        msg = "f should be between 1 and 1000 GHz"
+        raise ValueError(msg)
+
     log_f = np.log10(f)
     k_h = 10 ** _p838_log_sum(log_f, *_P838_K_H)
     k_v = 10 ** _p838_log_sum(log_f, *_P838_K_V)
