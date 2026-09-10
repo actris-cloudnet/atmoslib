@@ -1,5 +1,5 @@
 import logging
-from typing import Literal, TypeAlias
+from typing import Literal, TypeAlias, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -463,19 +463,82 @@ def isa_altitude(t: npt.NDArray, p: npt.NDArray) -> npt.NDArray:
     return (t / con.L0) * ((con.P0 / p) ** (1 / _ISA_EXPONENT) - 1)
 
 
-def isa_pressure(gph: npt.NDArray) -> npt.NDArray:
-    """Calculate atmospheric pressure at given altitude.
+@overload
+def isa_pressure(gph: float) -> float: ...
 
-    Uses the International Standard Atmosphere (ISA) hypsometric formula. Only
-    valid in troposphere up to 11 km.
+
+@overload
+def isa_pressure(gph: npt.NDArray) -> npt.NDArray: ...
+
+
+def isa_pressure(gph):
+    """Calculate pressure at given geopotential height.
+
+    Calculated using the barometric formula in International Standard Atmosphere
+    (ISA). Only valid in troposphere up to 11 km.
 
     Args:
         gph: Geopotential height (gpm).
 
     Returns:
         Atmospheric pressure (Pa).
+
+    Raises:
+        ValueError: If height is over 11 km.
+    """
+    return con.P0 * (isa_temperature(gph) / con.T_STD) ** _ISA_EXPONENT
+
+
+@overload
+def isa_temperature(gph: float) -> float: ...
+
+
+@overload
+def isa_temperature(gph: npt.NDArray) -> npt.NDArray: ...
+
+
+def isa_temperature(gph):
+    """Calculate temperature at given geopotential height.
+
+    Calculated using the barometric formula in International Standard Atmosphere
+    (ISA). Only valid in troposphere up to 11 km.
+
+    Args:
+        gph: Geopotential height (gpm).
+
+    Returns:
+        Temperature (K).
+
+    Raises:
+        ValueError: If height is over 11 km.
     """
     if np.any(gph >= 11_000):
         msg = "Valid only up to 11 km"
         raise ValueError(msg)
-    return con.P0 * (1 - con.L0 * gph / con.T_STD) ** _ISA_EXPONENT
+    return con.T_STD - con.L0 * gph
+
+
+@overload
+def isa_air_density(gph: float) -> float: ...
+
+
+@overload
+def isa_air_density(gph: npt.NDArray) -> npt.NDArray: ...
+
+
+def isa_air_density(gph):
+    """Calculate air density at given geopotential height.
+
+    Calculated using the barometric formula in International Standard Atmosphere
+    (ISA). Only valid in troposphere up to 11 km.
+
+    Args:
+        gph: Geopotential height (gpm).
+
+    Returns:
+        Air density (kg m-3).
+
+    Raises:
+        ValueError: If height is over 11 km.
+    """
+    return isa_pressure(gph) / (con.RS * isa_temperature(gph))

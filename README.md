@@ -56,6 +56,8 @@ NumPy rules).
 | `adiabatic_lwc_gradient(t, p)`              | Adiabatic vertical gradient of LWC at cloud base (kg m⁻³ m⁻¹, Brenguier 1991) |
 | `hydrostatic_pressure(t, q, z, p_sfc)`      | Pressure profile from surface value via hypsometric equation (Pa)             |
 | `isa_pressure(gph)`                         | Pressure from geopotential height (Pa, ISA)                                   |
+| `isa_temperature(gph)`                      | Temperature from geopotential height (K, ISA)                                 |
+| `isa_air_density(gph)`                      | Air density from geopotential height (kg m⁻³, ISA)                            |
 | `isa_altitude(t, p)`                        | Geopotential height from pressure and temperature (gpm, ISA)                  |
 | `geometric_height(gph)`                     | Geometric height from geopotential height (m, ECMWF)                          |
 | `c2k(t)` / `k2c(t)`                         | Celsius ↔ Kelvin conversion                                                  |

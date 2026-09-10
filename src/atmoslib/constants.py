@@ -26,6 +26,9 @@ LATENT_HEAT_0: Final = 2.501e6
 # Standard atmospheric pressure at sea level (Pa)
 P0: Final = 101325
 
+# Standard air density at sea level (kg m-3)
+RHO_STD: Final = 1.225
+
 # Meteorological reference pressure (Pa, 1000 hPa). Distinct from P0
 # (ICAO standard sea-level pressure).
 P_REF: Final = 100000
