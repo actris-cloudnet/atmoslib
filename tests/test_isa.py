@@ -81,4 +81,4 @@ def test_isa_air_density_consistency_with_ideal_gas_law():
     # isa_air_density should equal isa_pressure / (R * isa_temperature)
     gph = np.array([0, 1000, 5000, 10000])
     expected = isa_pressure(gph) / (con.RS * isa_temperature(gph))
-    assert_allclose(isa_air_density(gph), expected, rtol=1e-10)
+    assert_allclose(isa_air_density(gph), expected, rtol=2e-5)

@@ -486,7 +486,10 @@ def isa_pressure(gph):
     Raises:
         ValueError: If height is over 11 km.
     """
-    return con.P0 * (isa_temperature(gph) / con.T_STD) ** _ISA_EXPONENT
+    if np.any(gph >= 11_000):
+        msg = "Valid only up to 11 km"
+        raise ValueError(msg)
+    return con.P0 * (1 - con.L0 * gph / con.T_STD) ** _ISA_EXPONENT
 
 
 @overload
@@ -541,4 +544,7 @@ def isa_air_density(gph):
     Raises:
         ValueError: If height is over 11 km.
     """
-    return isa_pressure(gph) / (con.RS * isa_temperature(gph))
+    if np.any(gph >= 11_000):
+        msg = "Valid only up to 11 km"
+        raise ValueError(msg)
+    return con.RHO_STD * (1 - con.L0 * gph / con.T_STD) ** (_ISA_EXPONENT - 1)
