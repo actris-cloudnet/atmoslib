@@ -433,10 +433,17 @@ def hydrostatic_pressure(
     Returns:
         Pressure at each level (Pa), same shape as ``t``.
 
+    Raises:
+        ValueError: If masked values are given.
+
     References:
         Wallace, J. M., & Hobbs, P. V. (2006). Atmospheric Science: An
         Introductory Survey, 2nd ed., Section 3.2.
     """
+    for key, val in locals().items():
+        if ma.is_masked(val):
+            msg = f"{key} contains masked values"
+            raise ValueError(msg)
     tv = virtual_temperature(t, q)
     tv_half = (tv[..., :-1] + tv[..., 1:]) / 2
     dz = np.diff(z, axis=-1)

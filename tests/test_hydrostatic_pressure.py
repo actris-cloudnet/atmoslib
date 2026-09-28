@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+from numpy import ma
 
 from atmoslib import constants as con
 from atmoslib.thermodynamics import hydrostatic_pressure
@@ -92,3 +93,12 @@ def test_known_reference_value():
     q = np.zeros_like(z)
     p = hydrostatic_pressure(t, q, z, np.array(101325.0))
     assert p[-1] == pytest.approx(50500.0, rel=0.01)
+
+
+def test_masked_value():
+    t = ma.array([288.15, 281.65, 275.15], mask=[False, True, False])
+    q = np.array([0.005, 0.003, 0.001])
+    z = np.array([0.0, 1000.0, 2000.0])
+    p_sfc = np.array(101325.0)
+    with pytest.raises(ValueError, match="t contains masked values"):
+        hydrostatic_pressure(t, q, z, p_sfc)
